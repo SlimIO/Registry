@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "postinstall": "node exec_db.js",
         "start": "node index.js",
         "prepublishOnly": "pkg-ok",
         "test": "ava --verbose",
@@ -18,6 +19,7 @@
     "author": "SlimIO",
     "license": "MIT",
     "dependencies": {
+        "inquirer": "^6.2.1",
         "polka": "^0.5.1",
         "sqlite": "^3.0.0"
     },
