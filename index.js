@@ -2,6 +2,13 @@
 const polka = require("polka");
 const sqlite = require("sqlite");
 const { readFile } = require("fs").promises;
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const send = require("@polka/send-type");
+
+// CONSTANTS
+const PORT = process.env.PORT || 1337;
+const SECRET_KEY = process.env.registry_secret;
 
 /**
  * @async
@@ -13,9 +20,12 @@ async function serverPolka() {
     const db = await sqlite.open("./database.sqlite");
 
     // Create HTTP Server
-    const server = polka();
+    const server = polka().listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
 
     // Global middleware
+    server.use(bodyParser.json());
     server.use((req, res, next) => {
         res.json = function json(payload) {
             return res.end(JSON.stringify(payload));
@@ -50,10 +60,41 @@ async function serverPolka() {
         return res.json(addon);
     });
 
-    // Boot Http Server
-    server.listen(1337, () => {
-        console.log("HTTP Server started on port 1337");
+    // Login endpoint
+    server.post("/login", async(req, res) => {
+        if (!req.body.username || !req.body.password) {
+            return send(res, 400, "You need a login and a password");
+        }
+
+        const user = await db.get(
+            "SELECT DISTINCT username, password, id FROM users WHERE username=? AND password=?",
+            req.body.username,
+            req.body.password
+        );
+
+        if (typeof user === "undefined") {
+            return send(res, 401, "User not found");
+        }
+
+        const token = jwt.sign({
+            sub: user.id,
+            username: user.username
+
+        }, SECRET_KEY, { expiresIn: "1 min" });
+
+        return send(res, 200, { access_token: token });
+    });
+
+    // protected ressource endpoint
+    server.get("/protected", (req, res) => {
+        jwt.verify(req.headers.authorization.split(" ")[1], SECRET_KEY, (err, authData) => {
+            if (err) {
+                send(res, 402, "Bad token");
+            }
+            else {
+                send(res, 200, "yo");
+            }
+        });
     });
 }
 serverPolka().catch(console.error);
-// catch errors
