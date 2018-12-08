@@ -10,5 +10,21 @@ CREATE TABLE IF NOT EXISTS "addons" (
 INSERT INTO "addons"
     ("name", "description", "version", "author", "git")
 VALUES
-    ('cpu', 'addon cpu', '1.0.0', 'SlimIO', 'https://github.com/SlimIO/cpu.git'),
-    ('Winmem', 'addon winem', '1.1.0', 'SlimIO', 'https://github.com/SlimIO/Winmem.git');
+    ("cpu", "addon cpu", "1.0.0", "SlimIO", "https://github.com/SlimIO/cpu.git"),
+    ("Winmem", "addon winem", "1.1.0", "SlimIO", "https://github.com/SlimIO/Winmem.git");
+
+CREATE TABLE IF NOT EXISTS "users" (
+    "id" INTEGER PRIMARY KEY NOT NULL,
+    "username" VARCHAR(40),
+    "password" VARCHAR(40),
+    "admin" BOOLEAN INTEGER NOT NULL
+);
+
+INSERT INTO "users"
+    ("username", "password", "admin")
+VALUES
+    ("irvin", "admin", "1"),
+    ("thomas", "admin", "1"),
+    ("alexandre", "admin", "1"),
+    ("marko", "admin", "1"),
+    ("guest", "guest", "0");
