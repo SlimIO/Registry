@@ -19,7 +19,12 @@
     "author": "SlimIO",
     "license": "MIT",
     "dependencies": {
+        "@polka/send-type": "^0.5.0",
+        "body-parser": "^1.18.3",
+        "express": "^4.16.4",
+        "express-jwt": "^5.3.1",
         "inquirer": "^6.2.1",
+        "jsonwebtoken": "^8.4.0",
         "polka": "^0.5.1",
         "sqlite": "^3.0.0"
     },
