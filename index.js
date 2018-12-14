@@ -1,7 +1,6 @@
-// Require NodeJS Dependencies
+// Require Third-party Dependencies
 const polka = require("polka");
 const sqlite = require("sqlite");
-const { readFile } = require("fs").promises;
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
@@ -13,8 +12,8 @@ const SECRET_KEY = process.env.registry_secret;
 /**
  * @async
  * @function serverPolka
- * @returns {void}
-*/
+ * @returns {Promise<void>}
+ */
 async function serverPolka() {
     // Create Local Database Constante
     const db = await sqlite.open("./database.sqlite");
