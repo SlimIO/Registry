@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
+const indicative = require("indicative");
 require("dotenv").config();
 
 // CONSTANTS
@@ -88,28 +89,21 @@ server.post("/login", async(req, res) => {
     return send(res, 200, { access_token: token });
 });
 
-// slimio post addon
-server.post("/slimio/addon", isAuthenticated, async(req, res) => {
-    const { addonName, description, version, author, git } = req.body;
+const AddonRules = {
+    name: "required|string|min:2",
+    description: "required|string",
+    version: "required|string",
+    author: "required|string",
+    git: "required|string"
+};
 
-    if (addonName === undefined) {
-        send(res, 403, "Votre addon n'a pas de nom");
-    }
-    else if (description === undefined) {
-        send(res, 403, "Votre addon n'a pas de description");
-    }
-    else if (version === undefined) {
-        send(res, 403, "Votre addon n'a pas de version");
-    }
-    else if (author === undefined) {
-        send(res, 403, "Votre addon n'a pas d'auteur'");
-    }
-    else if (git === undefined) {
-        send(res, 403, "Votre addon n'a pas de lien git");
-    }
+// slimio post addon
+server.post("/publishAddon", isAuthenticated, async(req, res) => {
+    await indicative.validateAll(req.body, AddonRules);
+    const { name, description, version, author, git } = req.body;
 
     const { lastID } = await req.db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
-        addonName, description, version, author, git);
+        name, description, version, author, git);
 
     return { addonID: lastID };
 });

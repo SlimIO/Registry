@@ -23,6 +23,7 @@
         "argon2": "~0.19.3",
         "body-parser": "^1.18.3",
         "dotenv": "^6.2.0",
+        "indicative": "^5.0.8",
         "jsonwebtoken": "^8.4.0",
         "kleur": "^3.0.1",
         "make-promises-safe": "^4.0.0",
