@@ -1,8 +1,14 @@
 // Require Third-party Dependencies
 const sqlite = require("sqlite");
 
+// admin password
 const password = "$argon2i$v=19$m=4096,t=3,p=1$shqNmzJ5QQxei83cWTpOig$wLyf6L28iqTKnMi9J7aHCFzZssDaeU33w0UYtyJk1ak";
 
+/**
+ * @async
+ * @function addData
+ * @returns {Promise<void>}
+ */
 async function addData() {
     const db = await sqlite.open("../database.sqlite");
 
@@ -19,11 +25,11 @@ VALUES
     ("username", "password")
 VALUES
     ("admin", "${password}"),
-    ("alexandre", "admin"),
+    ("alexandre", "${password}"),
     ("guest", "guest"),
-    ("irvin", "admin"),
-    ("marco", "admin"),
-    ("thomas", "admin");
+    ("irvin", "${password}"),
+    ("marco", "${password}"),
+    ("thomas", "${password}");
 `);
     // Insert into orga
     await db.exec(`INSERT INTO "orga"
