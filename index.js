@@ -1,3 +1,5 @@
+require("make-promises-safe");
+
 // Require Third-party Dependencies
 const sqlite = require("sqlite");
 const env = require("dotenv").config();
