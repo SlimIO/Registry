@@ -60,4 +60,4 @@ typings/
 # next.js build output
 .next
 database.sqlite
-encryptedPasswords.js
+cryptography.js
