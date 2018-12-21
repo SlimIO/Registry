@@ -4,10 +4,10 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
-const env = require("dotenv").config();
+require("dotenv").config();
 
 // CONSTANTS
-const SECRET_KEY = env.parsed.registry_secret;
+const SECRET_KEY = process.env.registry_secret || "default_secret";
 
 function isAuthenticated(req, res, next) {
     jwt.verify(req.headers.authorization.split(" ")[1], SECRET_KEY, (err) => {
