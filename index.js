@@ -10,6 +10,7 @@ const env = require("dotenv").config();
 // CONSTANTS
 const PORT = env.parsed.PORT;
 const SECRET_KEY = env.parsed.registry_secret;
+const adminPassword = env.parsed.admin_password;
 
 /**
  * @async
@@ -20,7 +21,7 @@ async function serverPolka() {
     // Create Local Database Constante
     const db = await sqlite.open("./database.sqlite");
 
-    // Create HTTP Server
+    // Create POLKA Server
     const server = polka().listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
@@ -77,7 +78,7 @@ async function serverPolka() {
     // Login endpoint
     server.post("/login", async(req, res) => {
         // Verifying password
-        const verifyCryptedPassword = await argon2.verify(req.body.password, "triodequatres");
+        const verifyCryptedPassword = await argon2.verify(req.body.password, adminPassword);
 
         // Testing if user exist
         if (!req.body.username || verifyCryptedPassword === false) {
