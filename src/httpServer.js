@@ -60,21 +60,25 @@ server.get("/addons/:addonName", async(req, res) => {
 
 // Login endpoint
 server.post("/login", async(req, res) => {
-    if (!req.body.username) {
+    const { username, password } = req.body;
+    if (!username) {
         return send(res, 400, "You need a login and a password");
     }
 
     const user = await req.db.get(
         "SELECT DISTINCT username, password, id FROM users WHERE username=? AND password=?",
-        req.body.username,
-        req.body.password
+        username,
+        password
     );
     if (typeof user === "undefined") {
         return send(res, 401, "User not found");
     }
 
-    // // Verifying password
-    // const verifyCryptedPassword = await argon2.verify(req.body.password, adminPassword);
+    // Verifying password
+    const isMatching = await argon2.verify(password, user.password);
+    if (!isMatching) {
+        return send(res, 401, "Invalid User Password");
+    }
 
     const token = jwt.sign({
         sub: user.id,
@@ -104,8 +108,10 @@ server.post("/slimio/addon", isAuthenticated, async(req, res) => {
         send(res, 403, "Votre addon n'a pas de lien git");
     }
 
-    await req.db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
+    const { lastID } = await req.db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
         addonName, description, version, author, git);
+
+    return { addonID: lastID };
 });
 
 module.exports = server;
