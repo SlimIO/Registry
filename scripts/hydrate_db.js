@@ -2,7 +2,7 @@
 const sqlite = require("sqlite");
 
 // admin password
-const password = "$argon2i$v=19$m=4096,t=3,p=1$shqNmzJ5QQxei83cWTpOig$wLyf6L28iqTKnMi9J7aHCFzZssDaeU33w0UYtyJk1ak";
+const adminPassword = "$argon2i$v=19$m=4096,t=3,p=1$shqNmzJ5QQxei83cWTpOig$wLyf6L28iqTKnMi9J7aHCFzZssDaeU33w0UYtyJk1ak";
 
 /**
  * @async
@@ -24,12 +24,12 @@ VALUES
     await db.exec(`INSERT INTO "users"
     ("username", "password")
 VALUES
-    ("admin", "${password}"),
-    ("alexandre", "${password}"),
+    ("admin", "${adminPassword}"),
+    ("alexandre", ""),
     ("guest", "guest"),
-    ("irvin", "${password}"),
-    ("marco", "${password}"),
-    ("thomas", "${password}");
+    ("irvin", ""),
+    ("marco", ""),
+    ("thomas", "");
 `);
     // Insert into orga
     await db.exec(`INSERT INTO "orga"
