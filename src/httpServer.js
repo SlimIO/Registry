@@ -45,9 +45,9 @@ server.get("/addons", async(req, res) => {
 server.get("/addons/:addonName", async(req, res) => {
     const addonName = req.params.addonName;
 
-    const addon = await req.db.get("SELECT DISTINCT name, description FROM addons WHERE name=?", addonName.slice(0));
+    const addon = await req.db.get("SELECT DISTINCT name, description FROM addons WHERE name=?", addonName);
     if (typeof addon === "undefined") {
-        return send(res, 503, { error: "Addon not found!" });
+        return send(res, 500, { error: "Addon not found!" });
     }
 
     return send(res, 200, addon);

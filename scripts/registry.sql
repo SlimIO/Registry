@@ -8,9 +8,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 -- adding addons
 CREATE TABLE IF NOT EXISTS "addons" (
     "id" INTEGER PRIMARY KEY NOT NULL,
-    "name" VARCHAR(35),
+    "name" VARCHAR(35) NOT NULL,
     "description" VARCHAR(120),
-    "version" VARCHAR(20),
-    "author" VARCHAR(25),
-    "git" VARCHAR(120)
+    "version" VARCHAR(20) NOT NULL,
+    "author" INTEGER NOT NULL,
+    "git" VARCHAR(120) NOT NULL
 );
