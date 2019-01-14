@@ -11,7 +11,7 @@ const sqlite = require("sqlite");
  * @returns {Promise<void>}
  */
 async function readData() {
-    const db = await sqlite.open("../database.sqlite");
+    const db = await sqlite.open(join(__dirname, "..", "database.sqlite"));
     const sql = await readFile(join(__dirname, "registry.sql"), { encoding: "utf8" });
 
     await db.exec(sql);
