@@ -11,6 +11,11 @@ const server = require("./src/httpServer");
 // CONSTANTS
 const PORT = process.env.PORT || 1337;
 
+/**
+ * @async
+ * @function main
+ * @returns {Promise<void>}
+ */
 async function main() {
     console.log(` > open SQLite database: ${yellow("./database.sqlite")}`);
     const db = await sqlite.open("./database.sqlite");
