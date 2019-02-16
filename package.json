@@ -19,7 +19,7 @@
     "author": "SlimIO",
     "license": "MIT",
     "dependencies": {
-        "@polka/send-type": "^0.5.0",
+        "@polka/send-type": "^0.5.2",
         "argon2": "~0.19.3",
         "body-parser": "^1.18.3",
         "dotenv": "^6.2.0",
