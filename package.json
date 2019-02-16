@@ -27,7 +27,7 @@
         "jsonwebtoken": "^8.4.0",
         "kleur": "^3.0.2",
         "make-promises-safe": "^4.0.0",
-        "polka": "^0.5.1",
+        "polka": "^0.5.2",
         "sqlite": "^3.0.0"
     },
     "devDependencies": {
