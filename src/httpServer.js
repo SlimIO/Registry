@@ -16,7 +16,7 @@ const { loginForm, addonForm } = require("./formatRules");
 const SECRET_KEY = process.env.registry_secret || "default_secret";
 
 function isAuthenticated(req, res, next) {
-    jwt.verify(req.headers.authorization.split(" ")[1], SECRET_KEY, (err) => {
+    jwt.verify(req.headers.authorization, SECRET_KEY, (err) => {
         if (err) {
             return send(res, 402, "Invalid Token");
         }
@@ -36,7 +36,8 @@ server.get("/", async(req, res) => {
 
 // Addons endpoint
 server.get("/addons", async(req, res) => {
-    const addons = await req.db.all("SELECT DISTINCT name FROM addons");
+    // const addons = await req.db.all("SELECT DISTINCT name FROM addons");
+    const addons = await req.Addons.findAll();
 
     send(res, 200, addons.map((row) => row.name));
 });
@@ -45,8 +46,12 @@ server.get("/addons", async(req, res) => {
 server.get("/addons/:addonName", async(req, res) => {
     const addonName = req.params.addonName;
 
-    const addon = await req.db.get("SELECT DISTINCT name, description FROM addons WHERE name=?", addonName);
-    if (typeof addon === "undefined") {
+    // const addon = await req.db.get("SELECT DISTINCT name, description FROM addons WHERE name=?", addonName);
+    const addon = await req.Addons.findOne({
+        attributes: ["name", "description"], where: { name: addonName }
+    });
+
+    if (addon === null) {
         return send(res, 500, { error: "Addon not found!" });
     }
 
@@ -55,20 +60,18 @@ server.get("/addons/:addonName", async(req, res) => {
 
 // Login endpoint
 server.post("/login", async(req, res) => {
-    await indicative.validateAll(req.body, loginForm);
+    // await indicative.validateAll(req.body, loginForm);
     const { username, password } = req.body;
-
-    const user = await req.db.get(
-        "SELECT DISTINCT username, password, id FROM users WHERE username=? AND password=?",
-        username,
-        password
-    );
-    if (typeof user === "undefined") {
+    const user = await req.Users.findOne({
+        attributes: ["username", "password", "id"],
+        where: { username }
+    });
+    if (user === null) {
         return send(res, 401, "User not found");
     }
 
     // Verifying password
-    const isMatching = await argon2.verify(password, user.password);
+    const isMatching = await argon2.verify(user.password, password);
     if (!isMatching) {
         return send(res, 401, "Invalid User Password");
     }
@@ -84,13 +87,22 @@ server.post("/login", async(req, res) => {
 
 // slimio post addon
 server.post("/publishAddon", isAuthenticated, async(req, res) => {
-    await indicative.validateAll(req.body, addonForm);
+    // await indicative.validateAll(req.body, addonForm);
     const { name, description, version, author, git } = req.body;
+    let result;
+    try {
+        result = await req.Addons.create({ name, description, version, author, git });
+    }
+    catch (error) {
+        return send(res, 500, error);
+    }
 
+    /*
     const { lastID } = await req.db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
         name, description, version, author, git);
+    */
 
-    return { addonID: lastID };
+    return send(res, 200, { addonID: result.id });
 });
 
 module.exports = server;

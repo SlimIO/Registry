@@ -8,6 +8,8 @@ const sqlite = require("sqlite");
 const got = require("got");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
+const Sequelize = require("sequelize");
+const models = require("../src/models");
 
 // Require Internal Dependencies
 const httpServer = require("../src/httpServer");
@@ -23,20 +25,46 @@ let db;
 
 ava.before(async(assert) => {
     db = await sqlite.open(DB_PATH);
-    const sql = await readFile(join(SRIPT_PATH, "registry.sql"), { encoding: "utf8" });
-    await db.exec(sql);
+    const sequelize = new Sequelize("db_test.sqlite", "username", null, { dialect: "sqlite", logging: false });
+    
+    const tables = models(sequelize);
+    await tables.Users.sync({ force: true });
+    await tables.Addons.sync({ force: true });
+    // const sql = await readFile(join(SRIPT_PATH, "registry.sql"), { encoding: "utf8" });
+    // await db.exec(sql);
 
     // Hydrate DB
     const cryptPw = await argon2.hash("admin");
+    const user = await tables.Users.create({
+        username: "admin",
+        password: cryptPw
+    });
+    await tables.Addons.create({
+        name: "cpu",
+        description: "",
+        version: "1.0.0",
+        author: user.id,
+        git: "http://github.com/"
+    });
+    await tables.Addons.create({
+        name: "memory",
+        description: "",
+        version: "1.0.0",
+        author: user.id,
+        git: "http://github.com/"
+    });
+    /*
     const { lastID } = await db.run("INSERT INTO users (username, password) VALUES (?, ?)", "admin", cryptPw);
     await db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
         "cpu", "", "1.0.0", lastID, "http://github.com/");
     await db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
         "memory", "", "2.0.0", lastID, "http://github.com/");
+    */
 
     await new Promise((resolve) => {
         httpServer.use((req, res, next) => {
-            req.db = db;
+            // req.db = db;
+            Object.assign(req, tables);
             next();
         });
 
@@ -80,6 +108,110 @@ ava("GET /addons/blah (must return 500 - Addon not found)", async(assert) => {
     const error = await assert.throwsAsync(async() => {
         await got(new URL("/addons/blah", HTTP_URL), { json: true });
     });
+
     assert.is(error.statusCode, 500);
     assert.is(error.body.error, "Addon not found!");
+});
+
+ava("POST /login (must return 200)", async(assert) => {
+    const login = { username: "admin", password: "admin" };
+
+    const { body } = await got.post(new URL("/login", HTTP_URL), { body: login, json: true });
+
+    assert.deepEqual(Object.keys(body), ["access_token"]);
+});
+
+ava("POST /login wrong password", async(assert) => {
+    const body = { username: "admin", password: "test" };
+
+    const error = await assert.throwsAsync(async() => {
+        await got.post(new URL("/login", HTTP_URL), { body, json: true });
+    });
+    assert.is(error.statusCode, 401);
+    assert.is(error.body, "Invalid User Password");
+});
+
+ava("POST /login User not found", async(assert) => {
+    const body = { username: "test", password: "test" };
+
+    const error = await assert.throwsAsync(async() => {
+        await got.post(new URL("/login", HTTP_URL), { body, json: true });
+    });
+    assert.is(error.statusCode, 401);
+    assert.is(error.body, "User not found");
+});
+
+ava("POST /login & /publishAddon (must return 402)", async(assert) => {
+    const login = { username: "admin", password: "admin" };
+    const addon = {
+        name: "network-interface",
+        version: "1.2.3",
+        author: "SlimIO",
+        git: "http://github.com/"
+    };
+
+    const { body } = await got.post(new URL("/login", HTTP_URL), { body: login, json: true });
+
+    const error = await assert.throwsAsync(async() => {
+        await got.post(new URL("/publishAddon", HTTP_URL), {
+            headers: {
+                authorization: body.access_token + 1
+            },
+            body: addon,
+            json: true
+        });
+    });
+
+    assert.is(error.statusCode, 402);
+    assert.is(error.body, "Invalid Token");
+});
+
+
+ava("POST /login & /publishAddon (must return 500)", async(assert) => {
+    const login = { username: "admin", password: "admin" };
+    const addon = {
+        name: "n",
+        version: "1.2.3",
+        author: "SlimIO",
+        git: "http://github.com/"
+    };
+
+    const { body } = await got.post(new URL("/login", HTTP_URL), { body: login, json: true });
+
+    const error = await assert.throwsAsync(async() => {
+        await got.post(new URL("/publishAddon", HTTP_URL), {
+            headers: {
+                authorization: body.access_token
+            },
+            body: addon,
+            json: true
+        });
+    });
+
+    assert.is(error.statusCode, 500);
+    assert.is(error.body.name, "SequelizeValidationError");
+    assert.is(error.body.errors[0].message, "Validation len on name failed");
+});
+
+
+ava("POST /login & /publishAddon (must return 200)", async(assert) => {
+    const login = { username: "admin", password: "admin" };
+    const addon = {
+        name: "network-interface",
+        version: "1.2.3",
+        author: "SlimIO",
+        git: "http://github.com/"
+    };
+
+    const { body } = await got.post(new URL("/login", HTTP_URL), { body: login, json: true });
+
+    const result = await got.post(new URL("/publishAddon", HTTP_URL), {
+        headers: {
+            authorization: body.access_token
+        },
+        body: addon,
+        json: true
+    });
+
+    assert.pass();
 });
