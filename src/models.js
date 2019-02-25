@@ -1,8 +1,8 @@
 const Sequelize = require("sequelize");
 
-function exportModels(dataBase) {
-/* eslint-disable new-cap */
-    const Users = dataBase.define("users", {
+function exportModels(database) {
+    /* eslint-disable new-cap */
+    const Users = database.define("users", {
         username: {
             type: Sequelize.STRING(40),
             allowNull: false,
@@ -11,7 +11,7 @@ function exportModels(dataBase) {
         password: { type: Sequelize.STRING(240), allowNull: false }
     });
 
-    const Addons = dataBase.define("addons", {
+    const Addons = database.define("addons", {
         name: {
             type: Sequelize.STRING(35),
             allowNull: false,

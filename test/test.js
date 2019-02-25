@@ -17,7 +17,6 @@ const httpServer = require("../src/httpServer");
 // CONSTANTS
 const HTTP_PORT = 2777;
 const HTTP_URL = new URL(`http://localhost:${HTTP_PORT}`);
-const SRIPT_PATH = join(__dirname, "..", "scripts");
 const DB_PATH = join(__dirname, "db_test.sqlite");
 
 // Globals
@@ -25,13 +24,12 @@ let db;
 
 ava.before(async(assert) => {
     db = await sqlite.open(DB_PATH);
-    const sequelize = new Sequelize("db_test.sqlite", "username", null, { dialect: "sqlite", logging: false });
-    
+    // const sequelize = new Sequelize("db_test.sqlite", "username", null, { dialect: "sqlite", logging: false });
+    const sequelize = new Sequelize("test", "root", "root", { dialect: "mysql", logging: false });
+
     const tables = models(sequelize);
     await tables.Users.sync({ force: true });
     await tables.Addons.sync({ force: true });
-    // const sql = await readFile(join(SRIPT_PATH, "registry.sql"), { encoding: "utf8" });
-    // await db.exec(sql);
 
     // Hydrate DB
     const cryptPw = await argon2.hash("admin");
@@ -53,17 +51,9 @@ ava.before(async(assert) => {
         author: user.id,
         git: "http://github.com/"
     });
-    /*
-    const { lastID } = await db.run("INSERT INTO users (username, password) VALUES (?, ?)", "admin", cryptPw);
-    await db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
-        "cpu", "", "1.0.0", lastID, "http://github.com/");
-    await db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
-        "memory", "", "2.0.0", lastID, "http://github.com/");
-    */
 
     await new Promise((resolve) => {
         httpServer.use((req, res, next) => {
-            // req.db = db;
             Object.assign(req, tables);
             next();
         });
@@ -199,7 +189,7 @@ ava("POST /login & /publishAddon (must return 200)", async(assert) => {
     const addon = {
         name: "network-interface",
         version: "1.2.3",
-        author: "SlimIO",
+        author: 1,
         git: "http://github.com/"
     };
 

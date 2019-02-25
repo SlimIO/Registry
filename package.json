@@ -23,11 +23,10 @@
         "argon2": "^0.20.1",
         "body-parser": "^1.18.3",
         "dotenv": "^6.2.0",
-        "indicative": "^5.0.8",
         "jsonwebtoken": "^8.4.0",
         "kleur": "^3.0.2",
         "make-promises-safe": "^4.0.0",
-        "mysql": "^2.16.0",
+        "mysql2": "^1.6.5",
         "polka": "^0.5.2",
         "sequelize": "^4.42.0",
         "sqlite": "^3.0.2"

@@ -29,13 +29,11 @@ async function initTables(tables, force = false) {
 async function main() {
     console.log(` > open SQLite database: ${yellow("./database.sqlite")}`);
     const sequelize = new Sequelize("./database.sqlite");
-    // const db = await sqlite.open("./database.sqlite");
     const tables = models(sequelize);
 
     await initTables(tables);
 
     server.use((req, res, next) => {
-        // req.db = db;
         Object.assign(req, tables);
         next();
     });

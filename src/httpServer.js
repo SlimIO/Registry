@@ -7,10 +7,6 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
-const indicative = require("indicative");
-
-// Require Internal Dependencies
-const { loginForm, addonForm } = require("./formatRules");
 
 // CONSTANTS
 const SECRET_KEY = process.env.registry_secret || "default_secret";
@@ -36,7 +32,6 @@ server.get("/", async(req, res) => {
 
 // Addons endpoint
 server.get("/addons", async(req, res) => {
-    // const addons = await req.db.all("SELECT DISTINCT name FROM addons");
     const addons = await req.Addons.findAll();
 
     send(res, 200, addons.map((row) => row.name));
@@ -46,7 +41,6 @@ server.get("/addons", async(req, res) => {
 server.get("/addons/:addonName", async(req, res) => {
     const addonName = req.params.addonName;
 
-    // const addon = await req.db.get("SELECT DISTINCT name, description FROM addons WHERE name=?", addonName);
     const addon = await req.Addons.findOne({
         attributes: ["name", "description"], where: { name: addonName }
     });
@@ -60,7 +54,6 @@ server.get("/addons/:addonName", async(req, res) => {
 
 // Login endpoint
 server.post("/login", async(req, res) => {
-    // await indicative.validateAll(req.body, loginForm);
     const { username, password } = req.body;
     const user = await req.Users.findOne({
         attributes: ["username", "password", "id"],
@@ -87,7 +80,6 @@ server.post("/login", async(req, res) => {
 
 // slimio post addon
 server.post("/publishAddon", isAuthenticated, async(req, res) => {
-    // await indicative.validateAll(req.body, addonForm);
     const { name, description, version, author, git } = req.body;
     let result;
     try {
@@ -96,11 +88,6 @@ server.post("/publishAddon", isAuthenticated, async(req, res) => {
     catch (error) {
         return send(res, 500, error);
     }
-
-    /*
-    const { lastID } = await req.db.run("INSERT INTO addons (name, description, version, author, git) VALUES (?, ?, ?, ?, ?)",
-        name, description, version, author, git);
-    */
 
     return send(res, 200, { addonID: result.id });
 });
