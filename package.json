@@ -27,6 +27,7 @@
         "jsonwebtoken": "^8.4.0",
         "kleur": "^3.0.2",
         "make-promises-safe": "^4.0.0",
+        "mysql": "^2.16.0",
         "polka": "^0.5.2",
         "sequelize": "^4.42.0",
         "sqlite": "^3.0.2"
