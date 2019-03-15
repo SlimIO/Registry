@@ -13,12 +13,11 @@ const models = require("./src/models");
 // CONSTANTS
 const PORT = process.env.PORT || 1337;
 
+// set function in utils files ?!
 async function initTables(tables, force = false) {
-    const initTable = [];
     for (const [, table] of Object.entries(tables)) {
-        initTable.push(table.sync({ force }));
+        await table.sync({ force });
     }
-    await Promise.all(initTable);
 }
 
 /**
@@ -28,10 +27,16 @@ async function initTables(tables, force = false) {
  */
 async function main() {
     console.log(` > open SQLite database: ${yellow("./database.sqlite")}`);
-    const sequelize = new Sequelize("./database.sqlite");
+    // sequelize = new Sequelize("database.db", "username", null, {
+    //     storage: "database.db",
+    //     dialect: "sqlite",
+    //     logging: false
+    // });
+    sequelize = new Sequelize("test", "root", "root", { dialect: "mysql", logging: false });
     const tables = models(sequelize);
 
-    await initTables(tables);
+    // await initTables(tables);
+    await sequelize.sync();
 
     server.use((req, res, next) => {
         Object.assign(req, tables);

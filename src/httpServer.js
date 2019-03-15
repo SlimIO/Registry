@@ -7,54 +7,38 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
+const is = require("@slimio/is");
+
+const userRouter = require("./routes/user.js");
+const addonRouter = require("./routes/addon.js");
+const organisationRouter = require("./routes/organisation.js");
+
+const { SECRET_KEY } = require("./routes/utils.js");
 
 // CONSTANTS
-const SECRET_KEY = process.env.registry_secret || "default_secret";
-
-function isAuthenticated(req, res, next) {
-    jwt.verify(req.headers.authorization, SECRET_KEY, (err) => {
-        if (err) {
-            return send(res, 402, "Invalid Token");
-        }
-
-        return next();
-    });
-}
+// const SECRET_KEY = process.env.registry_secret || "default_secret";
 
 // Create POLKA Server
 const server = polka();
 server.use(bodyParser.json());
+server.use("/users", userRouter);
+server.use("/addon", addonRouter);
+server.use("/organisation", organisationRouter);
 
 // Uptime endpoint
-server.get("/", async(req, res) => {
-    send(res, 200, { uptime: process.uptime() });
-});
-
-// Addons endpoint
-server.get("/addons", async(req, res) => {
-    const addons = await req.Addons.findAll();
-
-    send(res, 200, addons.map((row) => row.name));
-});
-
-// Addon Name endpoint
-server.get("/addons/:addonName", async(req, res) => {
-    const addonName = req.params.addonName;
-
-    const addon = await req.Addons.findOne({
-        attributes: ["name", "description"], where: { name: addonName }
-    });
-
-    if (addon === null) {
-        return send(res, 500, { error: "Addon not found!" });
-    }
-
-    return send(res, 200, addon);
-});
+server.get("/", async(req, res) => send(res, 200, { uptime: process.uptime() }));
 
 // Login endpoint
 server.post("/login", async(req, res) => {
     const { username, password } = req.body;
+
+    // if (!is.string(username)) {
+    //     return send(res, 500, { error: "username must be a typeof <string>" });
+    // }
+    // if (!is.string(password)) {
+    //     return send(res, 500, { error: "password must be a typeof <string>" });
+    // }
+
     const user = await req.Users.findOne({
         attributes: ["username", "password", "id"],
         where: { username }
@@ -71,25 +55,11 @@ server.post("/login", async(req, res) => {
 
     // eslint-disable-next-line
     const access_token = jwt.sign({
-        sub: user.id,
+        id: user.id,
         username: user.username
     }, SECRET_KEY, { expiresIn: "3 hours" });
 
     return send(res, 200, { access_token });
-});
-
-// slimio post addon
-server.post("/publishAddon", isAuthenticated, async(req, res) => {
-    const { name, description, version, author, git } = req.body;
-    let result;
-    try {
-        result = await req.Addons.create({ name, description, version, author, git });
-    }
-    catch (error) {
-        return send(res, 500, error);
-    }
-
-    return send(res, 200, { addonID: result.id });
 });
 
 module.exports = server;

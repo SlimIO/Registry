@@ -4,7 +4,6 @@ const { join } = require("path");
 
 // Require Third-party Dependencies
 const ava = require("ava");
-const sqlite = require("sqlite");
 const got = require("got");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
@@ -17,38 +16,63 @@ const httpServer = require("../src/httpServer");
 // CONSTANTS
 const HTTP_PORT = 2777;
 const HTTP_URL = new URL(`http://localhost:${HTTP_PORT}`);
-const DB_PATH = join(__dirname, "db_test.sqlite");
+const DB_PATH = join(__dirname, "db_test.db");
+
+// maria|sqlite
+const DB = "maria";
 
 // Globals
-let db;
+let sequelize;
+let user;
+const headers = {
+    authorization: null
+};
 
 ava.before(async(assert) => {
-    db = await sqlite.open(DB_PATH);
-    // const sequelize = new Sequelize("db_test.sqlite", "username", null, { dialect: "sqlite", logging: false });
-    const sequelize = new Sequelize("test", "root", "root", { dialect: "mysql", logging: false });
+    if (DB === "maria") {
+        sequelize = new Sequelize("test", "root", "root", {
+            dialect: "mysql",
+            logging: false
+        });
+    }
+    else if (DB === "sqlite") {
+        sequelize = new Sequelize(DB_PATH, "username", null, {
+            storage: DB_PATH,
+            dialect: "sqlite",
+            logging: false
+        });
+    }
+    else {
+        sequelize = new Sequelize(DB_PATH, "username", null, {
+            storage: DB_PATH,
+            dialect: "sqlite",
+            logging: false
+        });
+    }
 
     const tables = models(sequelize);
-    await tables.Users.sync({ force: true });
-    await tables.Addons.sync({ force: true });
+    // await initTables(tables, true);
+    await sequelize.sync({ force: true });
 
     // Hydrate DB
     const cryptPw = await argon2.hash("admin");
-    const user = await tables.Users.create({
+    user = await tables.Users.create({
         username: "admin",
         password: cryptPw
     });
+
     await tables.Addons.create({
         name: "cpu",
         description: "",
         version: "1.0.0",
-        author: user.id,
+        authorId: user.id,
         git: "http://github.com/"
     });
     await tables.Addons.create({
         name: "memory",
         description: "",
         version: "1.0.0",
-        author: user.id,
+        authorId: user.id,
         git: "http://github.com/"
     });
 
@@ -61,13 +85,67 @@ ava.before(async(assert) => {
         httpServer.listen(HTTP_PORT, resolve);
     });
 
+    const login = { username: "admin", password: "admin" };
+    const { body } = await got.post(new URL("/login", HTTP_URL), { body: login, json: true });
+    headers.authorization = body.access_token;
+
     assert.pass();
 });
 
+/*
 ava.after(async(assert) => {
-    await db.close();
-    await unlink(DB_PATH);
+    // sequelize.connectionManager.connections.default.close();
+    // await sequelize.connectionManager.close();
+    await sequelize.close();
+    if (DB === "sqlite") {
+        await unlink(DB_PATH);
+    }
     assert.pass();
+});
+
+ava("POST /organisation (must return 200)", async(assert) => {
+    const organisation = { name: "SlimIO" };
+    const { body } = await got.post(new URL("/organisation", HTTP_URL), {
+        headers,
+        body: organisation,
+        json: true
+    });
+
+    // const { body: res } = await got(new URL("/organisation/SlimIO", HTTP_URL), { json: true });
+    // console.log(JSON.stringify(res, null, 4));
+
+    assert.true(is.plainObject(body));
+    assert.true(is.number(body.organisationId));
+});
+
+ava("get /organisation (must return 200)", async(assert) => {
+    const { body } = await got(new URL("/organisation/SlimIO", HTTP_URL), { json: true });
+    console.log(body);
+
+    assert.true(is.plainObject(body));
+});
+
+
+ava("GET /users (must return 200)", async(assert) => {
+    const { body } = await got(new URL("/users", HTTP_URL), { json: true });
+
+    assert.true(is.array(body));
+    assert.deepEqual(body.length, 1);
+});
+
+ava("GET /users/admin (must return 200)", async(assert) => {
+    const { body } = await got(new URL("/users/admin", HTTP_URL), { json: true });
+
+    assert.true(is.plainObject(body));
+    assert.is(body.addons.length, 2);
+    assert.deepEqual(Object.keys(body), [
+        "id",
+        "username",
+        "password",
+        "createdAt",
+        "updatedAt",
+        "addons"
+    ]);
 });
 
 ava("GET / must return uptime", async(assert) => {
@@ -89,6 +167,7 @@ ava("GET /addons must return an array", async(assert) => {
 ava("GET /addons/cpu (must return 200)", async(assert) => {
     const { body } = await got(new URL("/addons/cpu", HTTP_URL), { json: true });
 
+    console.log(body);
     assert.true(is.plainObject(body));
     assert.deepEqual(Object.keys(body), ["name", "description"]);
     assert.is(body.name, "cpu");
@@ -131,12 +210,11 @@ ava("POST /login User not found", async(assert) => {
     assert.is(error.body, "User not found");
 });
 
-ava("POST /login & /publishAddon (must return 402)", async(assert) => {
+ava("POST /publishAddon Invalid Token (must return 402)", async(assert) => {
     const login = { username: "admin", password: "admin" };
     const addon = {
         name: "network-interface",
         version: "1.2.3",
-        author: "SlimIO",
         git: "http://github.com/"
     };
 
@@ -157,12 +235,11 @@ ava("POST /login & /publishAddon (must return 402)", async(assert) => {
 });
 
 
-ava("POST /login & /publishAddon (must return 500)", async(assert) => {
+ava("POST /publishAddon SequelizeValidationError (must return 500)", async(assert) => {
     const login = { username: "admin", password: "admin" };
     const addon = {
         name: "n",
         version: "1.2.3",
-        author: "SlimIO",
         git: "http://github.com/"
     };
 
@@ -183,13 +260,11 @@ ava("POST /login & /publishAddon (must return 500)", async(assert) => {
     assert.is(error.body.errors[0].message, "Validation len on name failed");
 });
 
-
 ava("POST /login & /publishAddon (must return 200)", async(assert) => {
     const login = { username: "admin", password: "admin" };
     const addon = {
         name: "network-interface",
         version: "1.2.3",
-        author: 1,
         git: "http://github.com/"
     };
 
@@ -205,3 +280,4 @@ ava("POST /login & /publishAddon (must return 200)", async(assert) => {
 
     assert.pass();
 });
+*/
