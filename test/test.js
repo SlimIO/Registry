@@ -92,6 +92,10 @@ ava.before(async(assert) => {
     assert.pass();
 });
 
+ava("assert pass", async(assert) => {
+    assert.pass();
+});
+
 /*
 ava.after(async(assert) => {
     // sequelize.connectionManager.connections.default.close();
