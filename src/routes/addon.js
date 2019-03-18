@@ -115,13 +115,15 @@ server.post("/", isAuthenticated, async(req, res) => {
 
         semverSort.desc(versions);
         const greatestVersion = versions.shift();
-        if (semver.gt(version, greatestVersion) === false) {
+        if (!is.nullOrUndefined(greatestVersion) && semver.gt(version, greatestVersion) === false) {
             return send(res, 500, { error: `Addon version must be greater than ${greatestVersion}` });
         }
+
         // if (isNewVersion === false) {
         //     return send(res, 500, { error: "Addon version already exist" });
         // }
 
+        console.log(version);
         await addonExist.addVersion(await req.Version.create({ version }));
 
         return send(res, 200, { addonID: addonExist.id });

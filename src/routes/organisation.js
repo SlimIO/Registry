@@ -73,6 +73,14 @@ server.post("/", isAuthenticated, async(req, res) => {
     const { name, description } = req.body;
     let organisation;
     try {
+        const orgaExist = await req.Organisation.findOne({
+            where: { name }
+        });
+
+        if (orgaExist !== null) {
+            return send(res, 500, { error: `Organisation ${name} already exist` });
+        }
+
         organisation = await req.Organisation.create({
             name,
             description,
