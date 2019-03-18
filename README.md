@@ -289,7 +289,7 @@ Body Object:
 
 > Need to be authenticate: /login
 
-Create an organisation
+Add user to an organisation
 
 Headers:
 - authorization: token
