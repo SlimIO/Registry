@@ -1,6 +1,8 @@
+// Require Third-party Dependencies
 const polka = require("polka");
 const send = require("@polka/send-type");
 
+// Require Internal Dependencies
 const { isAuthenticated } = require("./utils.js");
 
 const server = polka();

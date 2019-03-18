@@ -1,9 +1,11 @@
+// Require Third-party Dependencies
 const polka = require("polka");
 const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const semver = require("semver");
 const semverSort = require("semver-sort");
 
+// Require Internal Dependencies
 const { isAuthenticated } = require("./utils.js");
 
 const server = polka();

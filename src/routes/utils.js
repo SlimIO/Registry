@@ -1,3 +1,4 @@
+// Require Third-party Dependencies
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 

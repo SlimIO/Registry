@@ -1,6 +1,8 @@
+// Require Third-party Dependencies
 const Sequelize = require("sequelize");
 const is = require("@slimio/is");
 const semver = require("semver");
+
 
 function exportModels(database) {
     /* eslint-disable new-cap */
@@ -57,7 +59,6 @@ function exportModels(database) {
             validate: { len: [2, 35] }
         },
         description: { type: Sequelize.STRING(120), allowNull: true },
-        // version: { type: Sequelize.STRING(20), allowNull: false },
         git: { type: Sequelize.STRING(120), allowNull: false }
     });
     Users.hasMany(Addons, { foreignKey: "authorId" });

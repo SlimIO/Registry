@@ -13,13 +13,6 @@ const models = require("./src/models");
 // CONSTANTS
 const PORT = process.env.PORT || 1337;
 
-// set function in utils files ?!
-async function initTables(tables, force = false) {
-    for (const [, table] of Object.entries(tables)) {
-        await table.sync({ force });
-    }
-}
-
 /**
  * @async
  * @function main
@@ -35,7 +28,6 @@ async function main() {
     sequelize = new Sequelize("test", "root", "root", { dialect: "mysql", logging: false });
     const tables = models(sequelize);
 
-    // await initTables(tables);
     await sequelize.sync();
 
     server.use((req, res, next) => {
