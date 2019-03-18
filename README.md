@@ -48,6 +48,255 @@ $ cd scripts
 $ node hydrate.js
 ```
 
+## API
+
+### User
+<details>
+    <summary>GET : /users</summary>
+Get all users
+
+```ts
+[
+    {
+        username: string,
+        createdAt: Date,
+        updatedAt: Date,
+        organisations: [
+            {
+                name: string
+            }
+        ],
+        addons: [
+            {
+                name: string,
+                description: string,
+            }
+        ]
+    }
+]
+```
+<br>
+</details>
+
+<details>
+    <summary>GET : /users/:userName</summary>
+Get user by name
+
+```ts
+{
+    username: string,
+    createdAt: Date,
+    updatedAt: Date,
+    username: string,
+    organisations: [
+        {
+            name: string
+        }
+    ],
+    addons: [
+        {
+            name: string,
+            description: string,
+        }
+    ]
+}
+```
+<br>
+</details>
+
+<details>
+    <summary>POST : /users</summary>
+
+Body Object:
+- username: string,
+- password: string
+
+<br>
+</details>
+
+### Addon
+
+<details>
+    <summary>GET : /addon</summary>
+Get all addons
+
+```ts
+[
+    {
+        name: string,
+        description: string,
+        git: string,
+        createdAt: Date,
+        updatedAt: Date,
+        author: {
+            username: string,
+            description: string,
+        },
+        organisations: {
+            name: string
+            createdAt: Date,
+            updatedAt: Date,
+        },
+        version: [ string ]
+    }
+]
+```
+<br>
+</details>
+
+<details>
+    <summary>GET : /addon/:addonName</summary>
+
+```ts
+{
+    name: string,
+    description: string,
+    git: string,
+    createdAt: Date,
+    updatedAt: Date,
+    author: {
+        username: string,
+        description: string,
+    },
+    organisations: {
+        name: string
+        createdAt: Date,
+        updatedAt: Date,
+    },
+    version: [ string ]
+}
+```
+
+<br>
+</details>
+
+<details>
+    <summary>POST : /addon</summary>
+
+> Need to be authenticate: /login
+
+Create an addon
+
+Headers:
+- authorization: token
+
+Body Object:
+- name: string,
+- description: string
+- version: string
+- organisation?: string
+- git: string
+
+<br>
+</details>
+
+
+### Organisation
+
+<details>
+    <summary>GET : /organisation</summary>
+Get all organisations
+
+```ts
+[
+    {
+        name: string,
+        description: string,
+        createdAt: Date,
+        updatedAt: Date,
+        owner: {
+            username: string,
+            createdAt: Date,
+            updatedAt: Date
+        },
+        users: [
+            {
+                username: string,
+                createdAt: Date,
+                updatedAt: Date
+            }
+        ]
+        addons: [
+            {
+                name: string,
+                description: string,
+                git: string,
+                createdAt: Date,
+                updatedAt: Date
+            }
+        ]
+    }
+]
+```
+<br>
+</details>
+
+<details>
+    <summary>GET : /organisation/:name</summary>
+Get organisation by name
+
+```ts
+{
+    name: string,
+    description: string,
+    createdAt: Date,
+    updatedAt: Date,
+    owner: {
+        username: string,
+        createdAt: Date,
+        updatedAt: Date
+    },
+    users: [
+        {
+            username: string,
+            createdAt: Date,
+            updatedAt: Date
+        }
+    ]
+    addons: [
+        {
+            name: string,
+            description: string,
+            git: string,
+            createdAt: Date,
+            updatedAt: Date
+        }
+    ]
+}
+```
+<br>
+</details>
+
+<details>
+    <summary>POST : /organisation</summary>
+
+> Need to be authenticate: /login
+
+Create an organisation
+
+Headers:
+- authorization: token
+
+Body Object:
+- name: string,
+- description: string
+
+<br>
+</details>
+
+<details>
+    <summary>POST : /organisation/:orgaName/:userName</summary>
+
+> Need to be authenticate: /login
+
+Create an organisation
+
+Headers:
+- authorization: token
+
+<br>
+</details>
+
 ## LICENSE
 MIT
 
