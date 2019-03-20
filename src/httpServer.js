@@ -32,13 +32,6 @@ server.get("/", async(req, res) => send(res, 200, { uptime: process.uptime() }))
 server.post("/login", async(req, res) => {
     const { username, password } = req.body;
 
-    // if (!is.string(username)) {
-    //     return send(res, 500, { error: "username must be a typeof <string>" });
-    // }
-    // if (!is.string(password)) {
-    //     return send(res, 500, { error: "password must be a typeof <string>" });
-    // }
-
     const user = await req.Users.findOne({
         attributes: ["username", "password", "id"],
         where: { username }
