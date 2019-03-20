@@ -51,7 +51,7 @@ $ node hydrate.js
 ## API
 
 For all request with a body data, you need to set your headers with:
-Content-Type: `application/json`
+- Content-Type: `application/json`
 
 <details>
     <summary>POST : /login</summary>

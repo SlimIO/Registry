@@ -40,9 +40,9 @@ server.get("/", async(req, res) => {
 server.get("/:name", async(req, res) => {
     const name = req.params.name;
 
-    let organisation;
+    let organisations;
     try {
-        organisation = await req.Organisation.findAll({
+        organisations = await req.Organisation.findAll({
             attributes: { exclude: ["id", "ownerId"] },
             where: { name },
             include: [{
@@ -60,12 +60,16 @@ server.get("/:name", async(req, res) => {
                 attributes: { exclude: ["id", "authorId", "organisationId"] }
             }]
         });
+
+        if (organisations[0] === undefined) {
+            return send(res, 500, { error: "Organisation not found!" });
+        }
     }
     catch (error) {
         return send(res, 500, error);
     }
 
-    return send(res, 200, { organisation });
+    return send(res, 200, organisations[0]);
 });
 
 // create an oraganisation

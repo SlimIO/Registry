@@ -12,22 +12,28 @@ const server = polka();
 
 // Addons endpoint
 server.get("/", async(req, res) => {
-    const addons = await req.Addons.findAll({
-        attributes: { exclude: ["id", "authorId", "organisationId"] },
-        include: [{
-            model: req.Users,
-            as: "author",
-            attributes: ["username"]
-        },
-        {
-            model: req.Version,
-            attributes: { exclude: ["id", "addonId"] }
-        },
-        {
-            model: req.Organisation,
-            attributes: { exclude: ["id", "ownerId"] }
-        }]
-    });
+    let addons;
+    try {
+        addons = await req.Addons.findAll({
+            attributes: { exclude: ["id", "authorId", "organisationId"] },
+            include: [{
+                model: req.Users,
+                as: "author",
+                attributes: ["username"]
+            },
+            {
+                model: req.Version,
+                attributes: { exclude: ["id", "addonId"] }
+            },
+            {
+                model: req.Organisation,
+                attributes: { exclude: ["id", "ownerId"] }
+            }]
+        });
+    }
+    catch (error) {
+        return send(res, 500, error);
+    }
 
     // return send(res, 200, addons.map((row) => row.name));
     return send(res, 200, addons);
@@ -37,30 +43,35 @@ server.get("/", async(req, res) => {
 server.get("/:addonName", async(req, res) => {
     const addonName = req.params.addonName;
 
-    const addon = await req.Addons.findAll({
-        where: { name: addonName },
-        attributes: { exclude: ["id", "authorId", "organisationId"] },
-        include: [{
-            model: req.Users,
-            as: "author",
-            attributes: ["username"]
-        },
-        {
-            model: req.Version,
-            attributes: { exclude: ["id", "addonId"] }
-        },
-        {
-            model: req.Organisation,
-            attributes: { exclude: ["id", "ownerId"] }
-        }],
-        limite: 1
-    });
+    let addons;
+    try {
+        addons = await req.Addons.findAll({
+            where: { name: addonName },
+            attributes: { exclude: ["id", "authorId", "organisationId"] },
+            include: [{
+                model: req.Users,
+                as: "author",
+                attributes: ["username"]
+            },
+            {
+                model: req.Version,
+                attributes: { exclude: ["id", "addonId"] }
+            },
+            {
+                model: req.Organisation,
+                attributes: { exclude: ["id", "ownerId"] }
+            }]
+        });
 
-    if (addon === null) {
-        return send(res, 500, { error: "Addon not found!" });
+        if (addons[0] === undefined) {
+            return send(res, 500, { error: "Addon not found!" });
+        }
+    }
+    catch (error) {
+        return send(res, 500, error);
     }
 
-    return send(res, 200, addon);
+    return send(res, 200, addons[0]);
 });
 
 
