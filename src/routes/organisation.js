@@ -9,9 +9,8 @@ const server = polka();
 
 // all oraganisations endpoint
 server.get("/", async(req, res) => {
-    let organisations;
     try {
-        organisations = await req.Organisation.findAll({
+        const organisations = await req.Organisation.findAll({
             attributes: { exclude: ["id", "ownerId"] },
             include: [{
                 model: req.Users,
@@ -28,21 +27,20 @@ server.get("/", async(req, res) => {
                 attributes: { exclude: ["id", "authorId", "organisationId"] }
             }]
         });
+
+        return send(res, 200, organisations);
     }
     catch (error) {
         return send(res, 500, error);
     }
-
-    return send(res, 200, organisations);
 });
 
 // get oraganisations by name endpoint
 server.get("/:name", async(req, res) => {
     const name = req.params.name;
 
-    let organisations;
     try {
-        organisations = await req.Organisation.findAll({
+        const organisations = await req.Organisation.findAll({
             attributes: { exclude: ["id", "ownerId"] },
             where: { name },
             include: [{
@@ -61,59 +59,53 @@ server.get("/:name", async(req, res) => {
             }]
         });
 
-        if (organisations[0] === undefined) {
-            return send(res, 500, { error: "Organisation not found!" });
+        if (organisations.length === 0) {
+            return send(res, 204, { error: "Organisation not found!" });
         }
+
+        return send(res, 200, organisations[0]);
     }
     catch (error) {
         return send(res, 500, error);
     }
-
-    return send(res, 200, organisations[0]);
 });
 
 // create an oraganisation
 server.post("/", isAuthenticated, async(req, res) => {
     const { name, description } = req.body;
-    let organisation;
-    try {
-        const orgaExist = await req.Organisation.findOne({
-            where: { name }
-        });
+    const ownerId = req.user.id;
 
+    try {
+        const orgaExist = await req.Organisation.findOne({ where: { name } });
         if (orgaExist !== null) {
             return send(res, 500, { error: `Organisation ${name} already exist` });
         }
 
-        organisation = await req.Organisation.create({
-            name,
-            description,
-            ownerId: req.user.id
-        });
-        const user = await req.Users.findOne({
-            where: { id: req.user.id }
+        const organisation = await req.Organisation.create({
+            name, description, ownerId
         });
 
-        if (!await organisation.hasUsers(user)) {
+        const user = await req.Users.findOne({ where: { id: ownerId } });
+        const userIsInCurrentOrg = await organisation.hasUsers(user);
+        if (!userIsInCurrentOrg) {
             await organisation.addUsers(user);
         }
+
+        return send(res, 201, { organisationId: organisation.id });
     }
     catch (error) {
         return send(res, 500, error);
     }
-
-    return send(res, 200, { organisationId: organisation.id });
 });
 
 // add user to an oraganisation
 server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
     const { orgaName, userName } = req.params;
 
-    let result;
     try {
         const organisation = await req.Organisation.findOne({ where: { name: orgaName } });
         if (organisation === null) {
-            return send(res, 500, { error: `Organisation ${orgaName} not found` });
+            return send(res, 204, { error: `Organisation ${orgaName} not found` });
         }
         if (organisation.ownerId !== req.user.id) {
             return send(res, 500, { error: "You have no right on this organisation" });
@@ -121,20 +113,20 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
 
         const user = await req.Users.findOne({ where: { username: userName } });
         if (user === null) {
-            return send(res, 500, { error: `User ${userName} not found` });
+            return send(res, 204, { error: `User ${userName} not found` });
         }
 
         if (await organisation.hasUsers(user)) {
             return send(res, 500, { error: `User ${userName} is already in the Organisation` });
         }
 
-        result = await organisation.addUsers(user);
+        return send(res, 200, {
+            result: await organisation.addUsers(user)
+        });
     }
     catch (error) {
         return send(res, 500, { error });
     }
-
-    return send(res, 200, { result });
 });
 
 // for V2 ?
