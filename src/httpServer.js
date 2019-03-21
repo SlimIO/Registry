@@ -6,17 +6,14 @@ const send = require("@polka/send-type");
 const argon2 = require("argon2");
 
 // Require Internal Dependencies
-const userRouter = require("./routes/user.js");
-const addonRouter = require("./routes/addon.js");
-const organisationRouter = require("./routes/organisation.js");
-const { SECRET_KEY } = require("./routes/utils.js");
+const { user, addon, organisation, utils } = require("./routes");
 
 // Create POLKA Server
 const server = polka();
 server.use(bodyParser.json());
-server.use("/users", userRouter);
-server.use("/addon", addonRouter);
-server.use("/organisation", organisationRouter);
+server.use("/users", user);
+server.use("/addon", addon);
+server.use("/organisation", organisation);
 
 // Uptime endpoint
 server.get("/", (req, res) => send(res, 200, { uptime: process.uptime() }));
@@ -43,7 +40,7 @@ server.post("/login", async(req, res) => {
     const access_token = jwt.sign({
         id: user.id,
         username: user.username
-    }, SECRET_KEY, { expiresIn: "3 hours" });
+    }, utils.SECRET_KEY, { expiresIn: "3 hours" });
 
     return send(res, 200, { access_token });
 });
