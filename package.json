@@ -4,7 +4,6 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "postinstall": "node scripts/exec_db.js",
         "start": "node index.js",
         "prepublishOnly": "pkg-ok",
         "test": "ava --verbose",
