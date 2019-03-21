@@ -38,6 +38,11 @@ PORT=1337
 For all request with a body data, you need to set your headers with:
 - Content-Type: `application/json`
 
+| icon | description |
+| --- | --- |
+| 🔑 | ⚠️ You need to be authenticated to use this route: see **/login** |
+
+<br />
 <details>
     <summary>POST : /login</summary>
 Login to get token
@@ -119,9 +124,7 @@ Get all addons
 </details>
 
 <details>
-    <summary>POST : /addon</summary>
-
-> Need to be authenticate: /login
+    <summary>🔑 POST : /addon</summary>
 
 Create an addon
 
@@ -216,9 +219,7 @@ Get organisation by name
 </details>
 
 <details>
-    <summary>POST : /organisation</summary>
-
-> Need to be authenticate: /login
+    <summary>🔑 POST : /organisation</summary>
 
 Create an organisation
 
@@ -233,9 +234,7 @@ Body Object:
 </details>
 
 <details>
-    <summary>POST : /organisation/:orgaName/:userName</summary>
-
-> Need to be authenticate: /login
+    <summary>🔑 POST : /organisation/:orgaName/:userName</summary>
 
 Add user to an organisation
 
@@ -245,6 +244,6 @@ Headers:
 <br>
 </details>
 
-# LICENSE
+# License
 MIT
 
