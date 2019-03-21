@@ -8,7 +8,7 @@ In other words, it's an NPM like.
 
 - Serveur HTTP [Polka](https://github.com/lukeed/polka)
 - Token [JsonWebToken](https://github.com/auth0/node-jsonwebtoken)
-- ORM [Sequelize](https://github.com/sequelize/sequelize) - [v4](http://docs.sequelizejs.com/) 
+- ORM [Sequelize](https://github.com/sequelize/sequelize) - [v4](http://docs.sequelizejs.com/)
     - [MariaDB](https://mariadb.org/)
     - [Sqlite](https://github.com/kriasoft/node-sqlite#readme)
 
@@ -55,58 +55,6 @@ Login to get token
 </details>
 
 ## User
-<details>
-    <summary>GET : /users</summary>
-Get all users
-
-```ts
-[
-    {
-        username: string,
-        createdAt: Date,
-        updatedAt: Date,
-        organisations: [
-            {
-                name: string
-            }
-        ],
-        addons: [
-            {
-                name: string,
-                description: string,
-            }
-        ]
-    }
-]
-```
-<br>
-</details>
-
-<details>
-    <summary>GET : /users/:userName</summary>
-Get user by name
-
-```ts
-{
-    username: string,
-    createdAt: Date,
-    updatedAt: Date,
-    username: string,
-    organisations: [
-        {
-            name: string
-        }
-    ],
-    addons: [
-        {
-            name: string,
-            description: string,
-        }
-    ]
-}
-```
-<br>
-</details>
 
 <details>
     <summary>POST : /users</summary>
