@@ -6,7 +6,8 @@ const send = require("@polka/send-type");
 const argon2 = require("argon2");
 
 // Require Internal Dependencies
-const { user, addon, organisation, utils } = require("./routes");
+const { user, addon, organisation } = require("./routes");
+const utils = require("./utils");
 
 // Create POLKA Server
 const server = polka();

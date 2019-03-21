@@ -6,7 +6,7 @@ const semver = require("semver");
 const semverSort = require("semver-sort");
 
 // Require Internal Dependencies
-const { isAuthenticated } = require("./utils.js");
+const { isAuthenticated } = require("../utils.js");
 
 const server = polka();
 

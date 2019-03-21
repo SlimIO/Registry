@@ -2,7 +2,6 @@
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 
-
 // CONSTANTS
 const SECRET_KEY = process.env.registry_secret || "default_secret";
 
