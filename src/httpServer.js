@@ -1,22 +1,15 @@
-require("dotenv").config();
-require("make-promises-safe");
-
 // Require Third-party Dependencies
 const polka = require("polka");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
-const is = require("@slimio/is");
 
+// Require Internal Dependencies
 const userRouter = require("./routes/user.js");
 const addonRouter = require("./routes/addon.js");
 const organisationRouter = require("./routes/organisation.js");
-
 const { SECRET_KEY } = require("./routes/utils.js");
-
-// CONSTANTS
-// const SECRET_KEY = process.env.registry_secret || "default_secret";
 
 // Create POLKA Server
 const server = polka();
@@ -26,7 +19,7 @@ server.use("/addon", addonRouter);
 server.use("/organisation", organisationRouter);
 
 // Uptime endpoint
-server.get("/", async(req, res) => send(res, 200, { uptime: process.uptime() }));
+server.get("/", (req, res) => send(res, 200, { uptime: process.uptime() }));
 
 // Login endpoint
 server.post("/login", async(req, res) => {
