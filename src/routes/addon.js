@@ -8,6 +8,7 @@ const semverSort = require("semver-sort");
 // Require Internal Dependencies
 const { isAuthenticated } = require("../utils.js");
 
+// Create Router
 const server = polka();
 
 // Addons endpoint

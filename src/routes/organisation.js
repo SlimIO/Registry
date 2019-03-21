@@ -5,6 +5,7 @@ const send = require("@polka/send-type");
 // Require Internal Dependencies
 const { isAuthenticated } = require("../utils.js");
 
+// Create Router
 const server = polka();
 
 // all oraganisations endpoint

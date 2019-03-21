@@ -4,6 +4,7 @@ const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
 
+// Create router
 const server = polka();
 
 // all users endpoint
