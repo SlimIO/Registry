@@ -1,54 +1,43 @@
-# addon-registry
-This addon is an API that creates an http server using the polka package whose main purpose is to be able to access information through the database system (sqlite) and to publish new addons.
-(In the near future this addon will use MariaDb for the management of the database).
+# Registry
 
-[Polka](https://github.com/lukeed/polka)
--
-[Sqlite](https://github.com/kriasoft/node-sqlite#readme)
--
+Registry is an **HTTP API** whose main purpose is to manage addons with users and organisations.
+
+In other words, it's an NPM like.
+
+# Important packages used
+
+- Serveur HTTP [Polka](https://github.com/lukeed/polka)
+- Token [JsonWebToken](https://github.com/auth0/node-jsonwebtoken)
+- ORM [Sequelize](https://github.com/sequelize/sequelize) - [v4](http://docs.sequelizejs.com/) 
+    - [MariaDB](https://mariadb.org/)
+    - [Sqlite](https://github.com/kriasoft/node-sqlite#readme)
+
 
 # Getting Started
 This addon is available in the Node Package Repository and can be easily installed with npm or yarn.
 
 ```bash
-$ npm i @slimio/addon-registry
+$ npm i @slimio/registry
 # or
-$ yarn add @slimio/addon-registry
+$ yarn add @slimio/registry
 ```
-Enter in directory
-```bash
-$ cd addon-registry
-```
-## First step
----
-### Set your Environment :
-For the API to work, you must create a file named ".env" at the root of the location where you previously installed the addon-registry addon.
+
+## Env file
+
+For the API to work, you must create a file named ".env" at the root of the location where you previously installed the Registry.
 
 ```bash
 $ touch .env
 ```
 
-Open it with
-```bash
-$ code .env
-```
-
-
-add these environment variables and save them, you can change the values ​​of these keys according to your needs
+Add these environment variables and save them, you can change the values ​​of these keys according to your needs
 
 ```js
 registry_secret=your_secret_key
 PORT=1337
 ```
-## Next step :
----
-in order to use the API of this addon you have to execute the hydrate.js file in the src directory
-```bash
-$ cd scripts
-$ node hydrate.js
-```
 
-## API
+# API
 
 For all request with a body data, you need to set your headers with:
 - Content-Type: `application/json`
@@ -65,7 +54,7 @@ Login to get token
 <br>
 </details>
 
-### User
+## User
 <details>
     <summary>GET : /users</summary>
 Get all users
@@ -129,7 +118,7 @@ Body Object:
 <br>
 </details>
 
-### Addon
+## Addon
 
 <details>
     <summary>GET : /addon</summary>
@@ -206,7 +195,7 @@ Body Object:
 </details>
 
 
-### Organisation
+## Organisation
 
 <details>
     <summary>GET : /organisation</summary>
@@ -312,6 +301,6 @@ Headers:
 <br>
 </details>
 
-## LICENSE
+# LICENSE
 MIT
 
