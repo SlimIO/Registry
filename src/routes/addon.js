@@ -41,9 +41,8 @@ server.get("/", async(req, res) => {
 server.get("/:addonName", async(req, res) => {
     const addonName = req.params.addonName;
 
-    let addons;
     try {
-        addons = await req.Addons.findAll({
+        const addons = await req.Addons.findAll({
             where: { name: addonName },
             attributes: { exclude: ["id", "authorId", "organisationId"] },
             include: [{
@@ -61,15 +60,15 @@ server.get("/:addonName", async(req, res) => {
             }]
         });
 
-        if (addons[0] === undefined) {
-            return send(res, 500, { error: "Addon not found!" });
+        if (addons.length === 0) {
+            return send(res, 204, { error: "Addon not found!" });
         }
+
+        return send(res, 200, addons[0]);
     }
     catch (error) {
         return send(res, 500, error);
     }
-
-    return send(res, 200, addons[0]);
 });
 
 
