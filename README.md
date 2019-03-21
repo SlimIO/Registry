@@ -15,9 +15,14 @@ In other words, it's an NPM like.
 
 # Getting Started
 
-## Env file
+First, clone and install the project
+```bash
+$ git clone https://github.com/SlimIO/Registry.git
+$ cd Registry
+$ npm ci
+```
 
-You must create a file named `.env` at the root of the project.
+Then, you must create a file named `.env` at the root of the project.
 ```bash
 $ touch .env
 ```
