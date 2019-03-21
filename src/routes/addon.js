@@ -85,7 +85,7 @@ server.post("/", isAuthenticated, async(req, res) => {
             });
 
             if (is.nullOrUndefined(organisationExist)) {
-                return send(res, 500, { error: "Organisation not found" });
+                return send(res, 204, { error: "Organisation not found" });
             }
             organisationId = organisationExist.id;
         }
@@ -100,16 +100,8 @@ server.post("/", isAuthenticated, async(req, res) => {
 
         if (addonExist === null) {
             const addon = await req.Addons.create({
-                name,
-                description,
-                authorId: req.user.id,
-                versions: [{ version }],
-                git,
-                organisationId
-            },
-            {
-                include: [req.Version]
-            });
+                name, description, authorId, versions: [{ version }], git, organisationId
+            }, { include: [req.Version] });
 
             return send(res, 200, { addonID: addon.id });
         }
@@ -127,14 +119,9 @@ server.post("/", isAuthenticated, async(req, res) => {
             return send(res, 500, { error: `Addon version must be greater than ${greatestVersion}` });
         }
 
-        // if (isNewVersion === false) {
-        //     return send(res, 500, { error: "Addon version already exist" });
-        // }
-
-        console.log(version);
         await addonExist.addVersion(await req.Version.create({ version }));
 
-        return send(res, 200, { addonID: addonExist.id });
+        return send(res, 201, { addonID: addonExist.id });
     }
     catch (error) {
         console.log(error);
