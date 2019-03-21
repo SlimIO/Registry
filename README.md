@@ -14,24 +14,15 @@ In other words, it's an NPM like.
 
 
 # Getting Started
-This addon is available in the Node Package Repository and can be easily installed with npm or yarn.
-
-```bash
-$ npm i @slimio/registry
-# or
-$ yarn add @slimio/registry
-```
 
 ## Env file
 
-For the API to work, you must create a file named ".env" at the root of the location where you previously installed the Registry.
-
+You must create a file named `.env` at the root of the project.
 ```bash
 $ touch .env
 ```
 
 Add these environment variables and save them, you can change the values ​​of these keys according to your needs
-
 ```js
 registry_secret=your_secret_key
 PORT=1337
