@@ -45,11 +45,20 @@ For all request with a body data, you need to set your headers with:
 <br />
 <details>
     <summary>POST : /login</summary>
-Login to get token
+
+Endpoint to authenticate a user. The HTTP request **body** must contains the following fields:
+```ts
+{
+    username: string;
+    password: string;
+}
+```
+
+The API return an access_token which will be required for some endpoints.
 
 ```ts
 {
-    access_token: string
+    access_token: string;
 }
 ```
 <br>
