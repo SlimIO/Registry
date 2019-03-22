@@ -29,7 +29,7 @@ $ touch .env
 
 Add these environment variables and save them, you can change the values ​​of these keys according to your needs
 ```js
-registry_secret=your_secret_key
+SECRET_KEY=your_secret_key
 PORT=1337
 ```
 
