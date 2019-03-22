@@ -49,8 +49,8 @@ For all request with a body data, you need to set your headers with:
 Endpoint to authenticate a user. The HTTP request **body** must contains the following fields:
 ```ts
 {
-    username: string;
-    password: string;
+    username: string,
+    password: string
 }
 ```
 
@@ -68,11 +68,16 @@ The API return an access_token which will be required for some endpoints.
 
 <details>
     <summary>POST : /users</summary>
+Endpoint to create an user.
 
-Body Object:
-- username: string,
-- password: string
+```ts
+{
+    username: string,
+    password: string
+}
+```
 
+Return an user id
 <br>
 </details>
 
@@ -82,6 +87,7 @@ Body Object:
     <summary>GET : /addon</summary>
 Get all addons
 
+Return a data structure like:
 ```ts
 [
     {
@@ -92,14 +98,19 @@ Get all addons
         updatedAt: Date,
         author: {
             username: string,
-            description: string,
+            description: string
         },
         organisations: {
-            name: string
+            name: string,
             createdAt: Date,
-            updatedAt: Date,
+            updatedAt: Date
         },
-        version: [ string ]
+        version: [
+            {
+                version: string,
+                createdAt: string
+            }
+        ]
     }
 ]
 ```
@@ -109,6 +120,9 @@ Get all addons
 <details>
     <summary>GET : /addon/:addonName</summary>
 
+Get an addon by name
+
+Return a data structure like:
 ```ts
 {
     name: string,
@@ -118,14 +132,19 @@ Get all addons
     updatedAt: Date,
     author: {
         username: string,
-        description: string,
+        description: string
     },
     organisations: {
-        name: string
+        name: string,
         createdAt: Date,
-        updatedAt: Date,
+        updatedAt: Date
     },
-    version: [ string ]
+    version: [
+        {
+            version: string,
+            createdAt: string
+        }
+    ]
 }
 ```
 
@@ -138,14 +157,25 @@ Get all addons
 Create an addon
 
 Headers:
-- authorization: token
+```ts
+{
+    Content-Type: `application/json`,
+    authorization: access_token
+}
+```
 
 Body Object:
-- name: string,
-- description: string
-- version: string
-- organisation?: string
-- git: string
+```ts
+{
+    name: string,
+    description: string,
+    version: string,
+    git: string,
+    organisation?: string
+}
+```
+
+Return an addon id
 
 <br>
 </details>
@@ -157,6 +187,7 @@ Body Object:
     <summary>GET : /organisation</summary>
 Get all organisations
 
+Return a data structure like:
 ```ts
 [
     {
@@ -193,8 +224,9 @@ Get all organisations
 
 <details>
     <summary>GET : /organisation/:name</summary>
-Get organisation by name
+Get an organisation by name
 
+Return a data structure like:
 ```ts
 {
     name: string,
@@ -233,11 +265,22 @@ Get organisation by name
 Create an organisation
 
 Headers:
-- authorization: token
+```ts
+{
+    Content-Type: `application/json`,
+    authorization: access_token
+}
+```
 
 Body Object:
-- name: string,
-- description: string
+```ts
+{
+    name: string,
+    description: string
+}
+```
+
+Return an organisation id
 
 <br>
 </details>
@@ -245,10 +288,16 @@ Body Object:
 <details>
     <summary>🔑 POST : /organisation/:orgaName/:userName</summary>
 
-Add user to an organisation
+Add an user to an organisation
 
 Headers:
-- authorization: token
+```ts
+{
+    authorization: access_token
+}
+```
+
+Return an user id
 
 <br>
 </details>
