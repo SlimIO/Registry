@@ -7,14 +7,10 @@ Registry is an **HTTP API** whose main purpose is to manage SlimIO Addons. The A
 
 This project has been inspired by **npm** Registry.
 
-# Important packages used
+# Requirements
 
-- Serveur HTTP [Polka](https://github.com/lukeed/polka)
-- Token [JsonWebToken](https://github.com/auth0/node-jsonwebtoken)
-- ORM [Sequelize](https://github.com/sequelize/sequelize) - [v4](http://docs.sequelizejs.com/)
-    - [MariaDB](https://mariadb.org/)
-    - [Sqlite](https://github.com/kriasoft/node-sqlite#readme)
-
+- Node.js v10 or higher
+- A local [MariaDB](https://mariadb.org/) database (else setup the project for SQLite).
 
 # Getting Started
 
