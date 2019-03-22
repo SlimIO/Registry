@@ -1,8 +1,11 @@
 # Registry
+![version](https://img.shields.io/badge/dynamic/json.svg?url=https://raw.githubusercontent.com/SlimIO/ArgParser/master/package.json?token=AOgWw3vrgQuu-U4fz1c7yYZyc7XJPNtrks5catjdwA%3D%3D&query=$.version&label=Version)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/SlimIO/ArgParser/commit-activity)
+![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 
-Registry is an **HTTP API** whose main purpose is to manage addons with users and organisations.
+Registry is an **HTTP API** whose main purpose is to manage SlimIO Addons. The API let you create your own account and manage an  organisation to publish and edit your personal and/or company addon(s).
 
-In other words, it's an NPM like.
+This project has been inspired by **npm** Registry.
 
 # Important packages used
 
