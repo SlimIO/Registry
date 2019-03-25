@@ -31,6 +31,11 @@ Add these environment variables and save them, you can change the values ​​o
 SECRET_KEY=your_secret_key
 PORT=1337
 ```
+# DB Schema
+
+<p align="center">
+    <img src="https://i.imgur.com/h0KRpsa.jpg">
+</p>
 
 # API
 
