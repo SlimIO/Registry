@@ -3,34 +3,34 @@ const polka = require("polka");
 const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
+const { validate } = require("indicative");
+
+// Require Internal Dependencies
+const rules = require("./validationRules");
 
 // Create router
 const server = polka();
 
 // create user endpoint
 server.post("/", async(req, res) => {
+    try {
+        await validate(req.body, rules.user);
+    }
+    catch (err) {
+        return send(res, 500, err.map((row) => row.message));
+    }
     const { username, password } = req.body;
 
-    if (!is.string(password)) {
-        return send(res, 500, { error: "password must be a typeof <string>" });
-    }
-
-    const exist = await req.Users.findOne({
-        where: { username }
-    });
-
+    const exist = await req.Users.findOne({ where: { username } });
     if (!is.nullOrUndefined(exist)) {
         return send(res, 500, { error: "This username already exist" });
     }
 
-    const cryptPw = await argon2.hash(password);
-
     const user = await req.Users.create({
-        username,
-        password: cryptPw
+        username, password: await argon2.hash(password)
     });
 
-    return send(res, 200, { userId: user.id });
+    return send(res, 201, { userId: user.id });
 });
 
 // all users endpoint
