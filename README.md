@@ -48,6 +48,18 @@ For all request with a body data, you need to set your headers with:
 
 <br />
 <details>
+    <summary>GET : /</summary>
+
+Return a JSON payload with the service uptime:
+```js
+{
+    uptime: 3403
+}
+```
+<br>
+</details>
+
+<details>
     <summary>POST : /login</summary>
 
 Endpoint to authenticate a user. The HTTP request **body** must contains the following fields:
