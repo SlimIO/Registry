@@ -6,7 +6,7 @@ const argon2 = require("argon2");
 const { validate } = require("indicative");
 
 // Require Internal Dependencies
-const rules = require("./validationRules");
+const rules = require("../validationRules");
 
 // Create router
 const server = polka();
@@ -23,7 +23,7 @@ server.post("/", async(req, res) => {
 
     const exist = await req.Users.findOne({ where: { username } });
     if (!is.nullOrUndefined(exist)) {
-        return send(res, 500, { error: "This username already exist" });
+        return send(res, 500, `The '${username}' username is already in use`);
     }
 
     const user = await req.Users.create({

@@ -79,6 +79,42 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(is.number(data.uptime), true, "uptime must be typeof number");
     });
 
+    japa("/users with no body payload", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/users", HTTP_URL));
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+        }
+    });
+
+    japa("/users with a username already taken", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/users", HTTP_URL), {
+                body: { username: "admin", password: "admin" }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "The 'admin' username is already in use");
+        }
+    });
+
+    japa("/users create 'fraxken' user", async(assert) => {
+        const { data, statusCode } = await post(new URL("/users", HTTP_URL), {
+            body: { username: "fraxken", password: "p@ssword" }
+        });
+        assert.equal(statusCode, 201, "POST Request must return code 201");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+        assert.deepEqual(Object.keys(data), ["userId"], "Returned data must only have 'userId' field");
+        assert.equal(is.number(data.userId), true, "userId must be typeof number");
+    });
+
     japa("/login with no body payload", async(assert) => {
         assert.plan(2);
 
@@ -119,9 +155,9 @@ japa.group("Endpoints tests", (group) => {
         }
     });
 
-    japa("/login with right username and password (must return an access_token)", async(assert) => {
+    japa("/login with 'fraxken' user (must return an access_token)", async(assert) => {
         const { data, statusCode } = await post(new URL("/login", HTTP_URL), {
-            body: { username: "admin", password: "admin" }
+            body: { username: "fraxken", password: "p@ssword" }
         });
         assert.equal(statusCode, 200, "POST Request must return code 200");
         assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
