@@ -1,10 +1,10 @@
 const user = {
-    username: "required|string",
-    password: "required|string"
+    username: "required|string|max:40",
+    password: "required|string|min:6"
 };
 
 const addon = {
-    addonName: "required|string|min:2"
+    addonName: "required|string|min:2|max:30"
 };
 
 module.exports = {
