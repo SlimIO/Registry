@@ -7,6 +7,7 @@ const semverSort = require("semver-sort");
 
 // Require Internal Dependencies
 const { isAuthenticated } = require("../utils.js");
+const rules = require("../validationRules");
 
 // Create Router
 const server = polka();
@@ -25,6 +26,12 @@ server.get("/", async(req, res) => {
 
 // Addon Name endpoint
 server.get("/:addonName", async(req, res) => {
+    try {
+        await validate(req.params, rules.addon);
+    }
+    catch (err) {
+        return send(res, 500, err.map((row) => row.message));
+    }
     const addonName = req.params.addonName;
 
     try {
@@ -47,7 +54,7 @@ server.get("/:addonName", async(req, res) => {
         });
 
         if (addons.length === 0) {
-            return send(res, 204, { error: "Addon not found!" });
+            return send(res, 204, `Unable to found Addon '${addonName}'`);
         }
 
         return send(res, 200, addons[0]);

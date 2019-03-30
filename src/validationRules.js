@@ -3,6 +3,10 @@ const user = {
     password: "required|string"
 };
 
+const addon = {
+    addonName: "required|string|min:2"
+};
+
 module.exports = {
-    user
+    user, addon
 };
