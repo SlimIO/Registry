@@ -4,9 +4,11 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
+const { validate } = require("indicative");
 
 // Require Internal Dependencies
 const { user, addon, organisation } = require("./routes");
+const rules = require("./validationRules");
 const utils = require("./utils");
 
 // Create POLKA Server
@@ -21,6 +23,12 @@ server.get("/", (req, res) => send(res, 200, { uptime: process.uptime() }));
 
 // Login endpoint
 server.post("/login", async(req, res) => {
+    try {
+        await validate(req.body, rules.user);
+    }
+    catch (err) {
+        return send(res, 500, err.map((row) => row.message));
+    }
     const { username, password } = req.body;
 
     const user = await req.Users.findOne({
@@ -28,7 +36,7 @@ server.post("/login", async(req, res) => {
         where: { username }
     });
     if (user === null) {
-        return send(res, 401, "User not found");
+        return send(res, 500, "User not found");
     }
 
     // Verifying password

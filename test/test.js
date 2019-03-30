@@ -7,7 +7,7 @@ const is = require("@slimio/is");
 const argon2 = require("argon2");
 const japa = require("japa");
 const Sequelize = require("sequelize");
-const { get } = require("httpie");
+const { get, post } = require("httpie");
 
 // Require Internal Dependencies
 const models = require("../src/models");
@@ -22,7 +22,9 @@ const DB_PATH = join(__dirname, "db_test.db");
 let user;
 let sequelize;
 
-japa.group("test", (group) => {
+japa.group("Endpoints tests", (group) => {
+    let accessToken = null;
+
     group.before(async() => {
         sequelize = new Sequelize(DB_PATH, "username", null, {
             storage: DB_PATH,
@@ -34,10 +36,10 @@ japa.group("test", (group) => {
         await sequelize.sync({ force: true });
 
         // Hydrate DB
-        user = await tables.Users.create({
+        user = (await tables.Users.create({
             username: "admin",
             password: await argon2.hash("admin")
-        });
+        })).dataValues;
 
         await tables.Addons.create({
             name: "cpu",
@@ -75,6 +77,58 @@ japa.group("test", (group) => {
         assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
         assert.deepEqual(Object.keys(data), ["uptime"], "Returned data must only have 'uptime' field");
         assert.equal(is.number(data.uptime), true, "uptime must be typeof number");
+    });
+
+    japa("/login with no body payload", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/login", HTTP_URL));
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+        }
+    });
+
+    japa("/login with unknown username/password", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/login", HTTP_URL), {
+                body: { username: "winni", password: "l'ourson" }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "User not found");
+        }
+    });
+
+    japa("/login with an invalid password", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/login", HTTP_URL), {
+                body: { username: "admin", password: "incorrect" }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 401, "POST Request must return code 401");
+            assert.equal(err.data, "Invalid User Password");
+        }
+    });
+
+    japa("/login with right username and password (must return an access_token)", async(assert) => {
+        const { data, statusCode } = await post(new URL("/login", HTTP_URL), {
+            body: { username: "admin", password: "admin" }
+        });
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+        assert.deepEqual(Object.keys(data), ["access_token"], "Returned data must only have 'access_token' field");
+        assert.equal(is.string(data.access_token), true, "access_token must be typeof string");
+
+        accessToken = data.access_token;
     });
 });
 
