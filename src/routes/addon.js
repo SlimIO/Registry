@@ -14,24 +14,9 @@ const server = polka();
 // Addons endpoint
 server.get("/", async(req, res) => {
     try {
-        const addons = await req.Addons.findAll({
-            attributes: { exclude: ["id", "authorId", "organisationId"] },
-            include: [{
-                model: req.Users,
-                as: "author",
-                attributes: ["username"]
-            },
-            {
-                model: req.Version,
-                attributes: { exclude: ["id", "addonId"] }
-            },
-            {
-                model: req.Organisation,
-                attributes: { exclude: ["id", "ownerId"] }
-            }]
-        });
+        const addons = await req.Addons.findAll({ attributes: ["name"] });
 
-        return send(res, 200, addons);
+        return send(res, 200, addons.map((row) => row.name));
     }
     catch (error) {
         return send(res, 500, error);
