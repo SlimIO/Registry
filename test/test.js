@@ -19,7 +19,6 @@ const HTTP_URL = new URL(`http://localhost:${HTTP_PORT}`);
 const DB_PATH = join(__dirname, "db_test.db");
 
 // Globals
-let user;
 let sequelize;
 
 japa.group("Endpoints tests", (group) => {
@@ -36,21 +35,21 @@ japa.group("Endpoints tests", (group) => {
         await sequelize.sync({ force: true });
 
         // Hydrate DB
-        user = (await tables.Users.create({
+        const user = await tables.Users.create({
             username: "admin",
             password: await argon2.hash("admin")
-        })).dataValues;
+        });
 
         await tables.Addons.create({
             name: "cpu",
-            description: "",
-            version: "1.0.0",
+            description: "CPU Addon",
+            version: "1.2.0",
             authorId: user.id,
-            git: "http://github.com/"
+            git: "https://github.com/SlimIO/cpu-addon"
         });
         await tables.Addons.create({
             name: "memory",
-            description: "",
+            description: "Memory Addon",
             version: "1.0.0",
             authorId: user.id,
             git: "http://github.com/"
@@ -165,6 +164,50 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(is.string(data.access_token), true, "access_token must be typeof string");
 
         accessToken = data.access_token;
+    });
+
+    japa("/addon (Retrieve all available addons)", async(assert) => {
+        const { data, statusCode } = await get(new URL("/addon", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.array(data), true, "Returned data must be an Array");
+        assert.deepEqual(data, ["cpu", "memory"]);
+    });
+
+    japa("/addon/:addonName (invalid params)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await get(new URL("/addon/s", HTTP_URL));
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+        }
+    });
+
+    japa("/addon/:addonName (Unable to found Addon)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await get(new URL("/addon/myAddon", HTTP_URL));
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "Unable to found Addon 'myAddon'");
+        }
+    });
+
+    japa("/addon/:addonName (Retrieve a given addon by his name)", async(assert) => {
+        const { data, statusCode } = await get(new URL("/addon/cpu", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+
+        assert.deepEqual(Object.keys(data), [
+            "name", "description", "git", "createdAt", "updatedAt", "author", "versions", "organisation"
+        ]);
+        assert.equal(data.name, "cpu");
+        assert.equal(data.git, "https://github.com/SlimIO/cpu-addon");
+        assert.equal(data.author.username, "admin");
     });
 });
 
