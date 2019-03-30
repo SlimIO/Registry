@@ -4,6 +4,7 @@ const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const semver = require("semver");
 const semverSort = require("semver-sort");
+const { validate } = require("indicative");
 
 // Require Internal Dependencies
 const { isAuthenticated } = require("../utils.js");
@@ -54,7 +55,7 @@ server.get("/:addonName", async(req, res) => {
         });
 
         if (addons.length === 0) {
-            return send(res, 204, `Unable to found Addon '${addonName}'`);
+            return send(res, 500, `Unable to found Addon '${addonName}'`);
         }
 
         return send(res, 200, addons[0]);
