@@ -37,7 +37,13 @@ japa.group("Endpoints tests", (group) => {
         // Hydrate DB
         const user = await tables.Users.create({
             username: "admin",
-            password: await argon2.hash("admin")
+            password: await argon2.hash("admin1953")
+        });
+
+        const org = await tables.Organisation.create({
+            name: "SlimIO",
+            description: "SlimIO Official Organisation",
+            ownerId: user.id
         });
 
         await tables.Addons.create({
@@ -47,12 +53,14 @@ japa.group("Endpoints tests", (group) => {
             authorId: user.id,
             git: "https://github.com/SlimIO/cpu-addon"
         });
+
         await tables.Addons.create({
             name: "memory",
             description: "Memory Addon",
             version: "1.0.0",
             authorId: user.id,
-            git: "http://github.com/"
+            git: "http://github.com/",
+            organisationId: org.id
         });
 
         await new Promise((resolve) => {
@@ -95,7 +103,7 @@ japa.group("Endpoints tests", (group) => {
 
         try {
             await post(new URL("/users", HTTP_URL), {
-                body: { username: "admin", password: "admin" }
+                body: { username: "admin", password: "admin1953" }
             });
         }
         catch (err) {
