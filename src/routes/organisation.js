@@ -65,7 +65,7 @@ server.get("/:name", async(req, res) => {
                 },
                 {
                     model: req.Users,
-                    attributes: { exclude: ["id", "password"] },
+                    attributes: ["username"],
                     through: { attributes: [] }
                 },
                 {
@@ -76,7 +76,7 @@ server.get("/:name", async(req, res) => {
         });
 
         if (organisations.length === 0) {
-            return send(res, 204, { error: "Organisation not found!" });
+            return send(res, 500, `Organisation '${name}' Not Found`);
         }
 
         return send(res, 200, organisations[0]);
