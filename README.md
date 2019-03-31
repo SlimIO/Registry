@@ -84,8 +84,8 @@ The API return an access_token which will be required for some endpoints.
 
 <details>
     <summary>POST : /users</summary>
-Endpoint to create an user.
 
+Endpoint to create a new user. The body must contains a JSON with `username` and `password` field as follow:
 ```ts
 {
     username: string,
@@ -93,7 +93,7 @@ Endpoint to create an user.
 }
 ```
 
-Return an user id
+Return a JSON with the **userId** field.
 <br>
 </details>
 
@@ -101,33 +101,12 @@ Return an user id
 
 <details>
     <summary>GET : /addon</summary>
-Get all addons
 
-Return a data structure like:
-```ts
+Get all addons avaible addons name as a JSON like the following response:
+```json
 [
-    {
-        name: string,
-        description: string,
-        git: string,
-        createdAt: Date,
-        updatedAt: Date,
-        author: {
-            username: string,
-            description: string
-        },
-        organisations: {
-            name: string,
-            createdAt: Date,
-            updatedAt: Date
-        },
-        version: [
-            {
-                version: string,
-                createdAt: string
-            }
-        ]
-    }
+    "cpu",
+    "memory"
 ]
 ```
 <br>
@@ -136,7 +115,7 @@ Return a data structure like:
 <details>
     <summary>GET : /addon/:addonName</summary>
 
-Get an addon by name
+Get a given addon by his name
 
 Return a data structure like:
 ```ts
@@ -201,39 +180,17 @@ Return an addon id
 
 <details>
     <summary>GET : /organisation</summary>
-Get all organisations
 
-Return a data structure like:
+Get all organisations. Return a data structure like:
 ```ts
-[
-    {
-        name: string,
+{
+    [name: string]: {
         description: string,
-        createdAt: Date,
-        updatedAt: Date,
-        owner: {
-            username: string,
-            createdAt: Date,
-            updatedAt: Date
-        },
-        users: [
-            {
-                username: string,
-                createdAt: Date,
-                updatedAt: Date
-            }
-        ]
-        addons: [
-            {
-                name: string,
-                description: string,
-                git: string,
-                createdAt: Date,
-                updatedAt: Date
-            }
-        ]
+        owner: string,
+        users: string[]
+        addons: string[]
     }
-]
+}
 ```
 <br>
 </details>
