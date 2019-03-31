@@ -147,7 +147,7 @@ Return a data structure like:
 </details>
 
 <details>
-    <summary>🔑 POST : /addon</summary>
+    <summary>🔑 POST : /addon/publish</summary>
 
 Create an addon
 
