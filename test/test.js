@@ -40,6 +40,11 @@ japa.group("Endpoints tests", (group) => {
             password: await argon2.hash("admin1953")
         });
 
+        await tables.Users.create({
+            username: "alexandre",
+            password: await argon2.hash("admin1953")
+        });
+
         const org = await tables.Organisation.create({
             name: "SlimIO",
             description: "SlimIO Official Organisation",
@@ -232,6 +237,33 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(SlimIO.users.length, 0);
         assert.equal(SlimIO.addons.length, 1);
         assert.equal(SlimIO.addons[0], "memory");
+    });
+
+    japa("/organisation/unknown (Organisation Not Found)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await get(new URL("/organisation/unknown", HTTP_URL));
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "Organisation 'unknown' Not Found");
+        }
+    });
+
+    japa("/organisation/SlimIO (assert return values)", async(assert) => {
+        const { data, statusCode } = await get(new URL("/organisation/SlimIO", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+
+        assert.deepEqual(Object.keys(data), [
+            "name", "description", "createdAt", "updatedAt", "owner", "users", "addons"
+        ]);
+        assert.equal(data.name, "SlimIO");
+        assert.equal(data.description, "SlimIO Official Organisation");
+        assert.equal(data.owner.username, "admin");
+        assert.equal(is.array(data.users), true);
+        assert.equal(is.array(data.addons), true);
     });
 });
 

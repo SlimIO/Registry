@@ -61,7 +61,7 @@ server.get("/:name", async(req, res) => {
                 {
                     model: req.Users,
                     as: "owner",
-                    attributes: { exclude: ["id", "password"] }
+                    attributes: ["username"]
                 },
                 {
                     model: req.Users,
