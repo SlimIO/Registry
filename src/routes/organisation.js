@@ -17,21 +17,32 @@ server.get("/", async(req, res) => {
                 {
                     model: req.Users,
                     as: "owner",
-                    attributes: { exclude: ["id", "password", "createdAt", "updatedAt"] }
+                    attributes: ["username"]
                 },
                 {
                     model: req.Users,
-                    attributes: { exclude: ["id", "password"] },
+                    attributes: ["username"],
                     through: { attributes: [] }
                 },
                 {
                     model: req.Addons,
-                    attributes: { exclude: ["id", "authorId", "organisationId"] }
+                    attributes: ["name"]
                 }
             ]
         });
 
-        return send(res, 200, organisations);
+        const cleanOrgs = organisations.reduce((curr, prev) => {
+            curr[prev.name] = {
+                description: prev.description,
+                owner: prev.owner.username,
+                users: prev.users.map((row) => row.username),
+                addons: prev.addons.map((row) => row.name)
+            };
+
+            return curr;
+        }, {});
+
+        return send(res, 200, cleanOrgs);
     }
     catch (error) {
         return send(res, 500, error);
@@ -59,7 +70,7 @@ server.get("/:name", async(req, res) => {
                 },
                 {
                     model: req.Addons,
-                    attributes: { exclude: ["id", "authorId", "organisationId"] }
+                    attributes: ["name"]
                 }
             ]
         });
