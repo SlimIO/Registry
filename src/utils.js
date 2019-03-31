@@ -8,7 +8,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "default_secret";
 function isAuthenticated(req, res, next) {
     jwt.verify(req.headers.authorization, SECRET_KEY, (err, user) => {
         if (err) {
-            return send(res, 402, "Invalid Token");
+            return send(res, 401, "Invalid Token");
         }
         req.user = user;
 
