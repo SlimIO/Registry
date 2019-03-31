@@ -217,5 +217,21 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(data.git, "https://github.com/SlimIO/cpu-addon");
         assert.equal(data.author.username, "admin");
     });
+
+    japa("/organisation (Retrieve all organisations)", async(assert) => {
+        const { data, statusCode } = await get(new URL("/organisation", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+
+        assert.deepEqual(Object.keys(data), ["SlimIO"], "SlimIO organisation must be the only organisation");
+
+        const SlimIO = data.SlimIO;
+        assert.deepEqual(Object.keys(SlimIO), ["description", "owner", "users", "addons"]);
+        assert.equal(SlimIO.description, "SlimIO Official Organisation");
+        assert.equal(SlimIO.owner, "admin");
+        assert.equal(SlimIO.users.length, 0);
+        assert.equal(SlimIO.addons.length, 1);
+        assert.equal(SlimIO.addons[0], "memory");
+    });
 });
 
