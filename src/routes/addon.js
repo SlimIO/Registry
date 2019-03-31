@@ -103,7 +103,7 @@ server.post("/publish", isAuthenticated, async(req, res) => {
                 name, description, authorId, versions: [{ version }], git, organisationId
             }, { include: [req.Version] });
 
-            return send(res, 200, { addonID: addon.id });
+            return send(res, 201, { addonId: addon.id });
         }
 
         if (authorId !== addonExist.authorId) {
@@ -121,7 +121,7 @@ server.post("/publish", isAuthenticated, async(req, res) => {
 
         await addonExist.addVersion(await req.Version.create({ version }));
 
-        return send(res, 201, { addonID: addonExist.id });
+        return send(res, 200, { addonId: addonExist.id });
     }
     catch (error) {
         console.log(error);

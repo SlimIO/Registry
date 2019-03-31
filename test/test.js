@@ -265,5 +265,48 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(is.array(data.users), true);
         assert.equal(is.array(data.addons), true);
     });
+
+    japa("/addon/publish (Invalid token)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/addon/publish", HTTP_URL), {
+                headers: { authorization: "blouh!" }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 401, "POST Request must return code 401");
+            assert.equal(err.data, "Invalid Token");
+        }
+    });
+
+    japa("/addon/publish (Publish an addon as 'fraxken')", async(assert) => {
+        {
+            const { data, statusCode } = await post(new URL("/addon/publish", HTTP_URL), {
+                body: {
+                    name: "network",
+                    description: "Network Addon",
+                    version: "0.1.0",
+                    git: "https://github.com/SlimIO"
+                },
+                headers: {
+                    authorization: accessToken
+                }
+            });
+
+            assert.equal(statusCode, 201, "POST Request must return code 201");
+            assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+            assert.deepEqual(Object.keys(data), ["addonId"]);
+            assert.equal(is.number(data.addonId), true);
+            assert.equal(data.addonId, 3);
+        }
+
+        const { data, statusCode } = await get(new URL("/addon/network", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+
+        assert.equal(data.name, "network");
+        assert.equal(data.author.username, "fraxken");
+    });
 });
 
