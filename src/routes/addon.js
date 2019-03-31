@@ -67,7 +67,13 @@ server.get("/:addonName", async(req, res) => {
 
 
 // publish addon endpoint
-server.post("/", isAuthenticated, async(req, res) => {
+server.post("/publish", isAuthenticated, async(req, res) => {
+    try {
+        await validate(req.body, rules.publish);
+    }
+    catch (err) {
+        return send(res, 500, err.map((row) => row.message));
+    }
     const { name, description, version, git, organisation } = req.body;
     const authorId = req.user.id;
 
