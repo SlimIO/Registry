@@ -1,6 +1,9 @@
 require("make-promises-safe");
 require("dotenv").config();
 
+// Require Node.js Dependencies
+const { join } = require("path");
+
 // Require Third-party Dependencies
 const { yellow } = require("kleur");
 const Sequelize = require("sequelize");
@@ -11,6 +14,16 @@ const models = require("./src/models");
 
 // CONSTANTS
 const PORT = process.env.PORT || 1337;
+const DB_OPTIONS = {
+    dialect: process.env.DB_DIALECT || "sqlite",
+    database: process.env.DB_NAME || "registry",
+    username: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || null
+};
+
+if (process.env.DB_DIALECT === "sqlite") {
+    DB_OPTIONS.storage = join(__dirname, "database.sqlite");
+}
 
 /**
  * @async
@@ -19,7 +32,7 @@ const PORT = process.env.PORT || 1337;
  */
 async function main() {
     console.log(` > open SQLite database: ${yellow("./database.sqlite")}`);
-    const sequelize = new Sequelize("test", "root", "root", { dialect: "mysql", logging: false });
+    const sequelize = new Sequelize(DB_OPTIONS);
     const tables = models(sequelize);
 
     await sequelize.sync();

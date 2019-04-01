@@ -30,7 +30,13 @@ Add these environment variables and save them, you can change the values ​​o
 ```js
 SECRET_KEY=your_secret_key
 PORT=1337
+
+DB_DIALECT=sqlite
+DB_NAME=registry
+DB_USER=root
+DB_PASSWORD=ROOT
 ```
+
 # DB Schema
 
 <p align="center">
