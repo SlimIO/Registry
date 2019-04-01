@@ -40,14 +40,7 @@ function exportModels(database) {
     const Version = database.define("version", {
         version: {
             type: Sequelize.STRING(20),
-            allowNull: false,
-            validate: {
-                semver: (val) => {
-                    if (is.nullOrUndefined(semver.valid(val))) {
-                        throw new Error("version must be like a semver");
-                    }
-                }
-            }
+            allowNull: false
         }
     },
     { updatedAt: false });
