@@ -540,5 +540,19 @@ japa.group("Endpoints tests", (group) => {
             assert.equal(err.data, "User 'fraxken' already in the 'SlimIO' Organisation");
         }
     });
+
+    japa("/organisation (Retrieve all organisations)", async(assert) => {
+        const { data, statusCode } = await get(new URL("/organisation", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+
+        assert.deepEqual(Object.keys(data), ["SlimIO"]);
+        assert.equal(is.array(data.SlimIO.users), true);
+        assert.equal(is.array(data.SlimIO.addons), true);
+        assert.equal(data.SlimIO.users.length, 1);
+        assert.equal(data.SlimIO.addons.length, 2);
+        assert.deepEqual(data.SlimIO.users, ["fraxken"]);
+        assert.deepEqual(data.SlimIO.addons, ["evtlogs", "memory"]);
+    });
 });
 
