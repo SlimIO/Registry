@@ -98,12 +98,12 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
             return send(res, 500, `Organisation '${orgaName}' not found`);
         }
         if (organisation.ownerId !== req.user.id) {
-            return send(res, 401, "You have no right on this organisation");
+            return send(res, 401, `You have no right on '${orgaName}' organisation`);
         }
 
         const user = await req.Users.findOne({ where: { username: userName } });
         if (user === null) {
-            return send(res, 500, `User ${userName} not found`);
+            return send(res, 500, `User '${userName}' not found`);
         }
 
         if (await organisation.hasUsers(user)) {

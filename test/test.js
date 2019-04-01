@@ -23,6 +23,7 @@ let sequelize;
 
 japa.group("Endpoints tests", (group) => {
     let accessToken = null;
+    let adminToken = null;
 
     group.before(async() => {
         sequelize = new Sequelize(DB_PATH, "username", null, {
@@ -406,10 +407,11 @@ japa.group("Endpoints tests", (group) => {
         const { data: ret } = await post(new URL("/login", HTTP_URL), {
             body: { username: "admin", password: "admin1953" }
         });
+        adminToken = ret.access_token;
 
         const { data, statusCode } = await post(new URL("/organisation/SlimIO/fraxken", HTTP_URL), {
             headers: {
-                authorization: ret.access_token
+                authorization: adminToken
             }
         });
 
@@ -450,6 +452,70 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(data.versions.length, 1);
         assert.equal(is.plainObject(data.organisation), true);
         assert.equal(data.organisation.name, "SlimIO");
+    });
+
+    japa("/unknown/fraxken (Organisation Not Found)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/organisation/unknown/fraxken", HTTP_URL), {
+                headers: {
+                    authorization: accessToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "Organisation 'unknown' not found");
+        }
+    });
+
+    japa("/SlimIO/fraxken (No right/permission on SlimIO Organisation)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/organisation/SlimIO/fraxken", HTTP_URL), {
+                headers: {
+                    authorization: accessToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 401, "POST Request must return code 401");
+            assert.equal(err.data, "You have no right on 'SlimIO' organisation");
+        }
+    });
+
+    japa("/SlimIO/boubou (User not found)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/organisation/SlimIO/boubou", HTTP_URL), {
+                headers: {
+                    authorization: adminToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "User 'boubou' not found");
+        }
+    });
+
+    japa("/SlimIO/fraxken (User already in SlimIO Organisation)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/organisation/SlimIO/fraxken", HTTP_URL), {
+                headers: {
+                    authorization: adminToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "User 'fraxken' already in the 'SlimIO' Organisation");
+        }
     });
 });
 
