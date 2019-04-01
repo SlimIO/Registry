@@ -82,6 +82,7 @@ server.get("/:name", async(req, res) => {
         return send(res, 200, organisations[0]);
     }
     catch (error) {
+        /* istanbul ignore next */
         return send(res, 500, error);
     }
 });
@@ -113,6 +114,7 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
         });
     }
     catch (error) {
+        /* istanbul ignore next */
         return send(res, 500, { error });
     }
 });
