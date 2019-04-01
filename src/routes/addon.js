@@ -21,6 +21,7 @@ server.get("/", async(req, res) => {
         return send(res, 200, addons.map((row) => row.name));
     }
     catch (error) {
+        /* istanbul ignore next */
         return send(res, 500, error);
     }
 });
@@ -61,6 +62,7 @@ server.get("/:addonName", async(req, res) => {
         return send(res, 200, addons[0]);
     }
     catch (error) {
+        /* istanbul ignore next */
         return send(res, 500, error);
     }
 });
@@ -85,7 +87,7 @@ server.post("/publish", isAuthenticated, async(req, res) => {
             });
 
             if (is.nullOrUndefined(organisationExist)) {
-                return send(res, 204, { error: "Organisation not found" });
+                return send(res, 500, { error: "Organisation not found" });
             }
             organisationId = organisationExist.id;
         }
@@ -107,25 +109,22 @@ server.post("/publish", isAuthenticated, async(req, res) => {
         }
 
         if (authorId !== addonExist.authorId) {
-            return send(res, 500, { error: "Addon name already exist" });
+            return send(res, 500, `Addon '${name}' already in use`);
         }
 
         const versions = addonExist.versions.map((obj) => obj.version);
-        // const isNewVersion = versions.every((ver) => ver !== version);
-
         semverSort.desc(versions);
         const greatestVersion = versions.shift();
+
         if (!is.nullOrUndefined(greatestVersion) && semver.gt(version, greatestVersion) === false) {
             return send(res, 500, { error: `Addon version must be greater than ${greatestVersion}` });
         }
-
         await addonExist.addVersion(await req.Version.create({ version }));
 
         return send(res, 200, { addonId: addonExist.id });
     }
     catch (error) {
-        console.log(error);
-
+        /* istanbul ignore next */
         return send(res, 500, { error });
     }
 });
