@@ -88,7 +88,7 @@ server.get("/:name", async(req, res) => {
     }
 });
 
-// add user to an oraganisation
+// add user to an organisation
 server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
     const { orgaName, userName } = req.params;
 
@@ -107,7 +107,7 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
         }
 
         if (await organisation.hasUsers(user)) {
-            return send(res, 500, { error: `User ${userName} is already in the Organisation` });
+            return send(res, 500, `User '${userName}' already in the '${orgaName}' Organisation`);
         }
         const result = await organisation.addUsers(user);
 
