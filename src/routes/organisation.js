@@ -111,7 +111,7 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
         }
         const result = await organisation.addUsers(user);
 
-        return send(res, 201, { result });
+        return send(res, 201, result[0]);
     }
     catch (error) {
         /* istanbul ignore next */

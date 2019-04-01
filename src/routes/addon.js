@@ -87,7 +87,7 @@ server.post("/publish", isAuthenticated, async(req, res) => {
             });
 
             if (is.nullOrUndefined(organisationExist)) {
-                return send(res, 500, { error: "Organisation not found" });
+                return send(res, 500, `Organisation '${organisation}' not found`);
             }
             organisationId = organisationExist.id;
         }

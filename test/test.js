@@ -401,5 +401,55 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(is.array(data.versions), true);
         assert.equal(data.versions.length, 2);
     });
+
+    japa("/:orgaName/:userName (Add 'fraxken' to SlimIO Org)", async(assert) => {
+        const { data: ret } = await post(new URL("/login", HTTP_URL), {
+            body: { username: "admin", password: "admin1953" }
+        });
+
+        const { data, statusCode } = await post(new URL("/organisation/SlimIO/fraxken", HTTP_URL), {
+            headers: {
+                authorization: ret.access_token
+            }
+        });
+
+        assert.equal(statusCode, 201, "POST Request must return code 201");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+        assert.deepEqual(Object.keys(data), ["createdAt", "updatedAt", "organisationId", "userId"]);
+    });
+
+    japa("/addon/publish (Publish addon on SlimIO Org)", async(assert) => {
+        {
+            const { data, statusCode } = await post(new URL("/addon/publish", HTTP_URL), {
+                body: {
+                    name: "evtlogs",
+                    description: "Events logs Addon",
+                    version: "1.0.0",
+                    git: "https://github.com/SlimIO",
+                    organisation: "SlimIO"
+                },
+                headers: {
+                    authorization: accessToken
+                }
+            });
+
+            assert.equal(statusCode, 201, "POST Request must return code 201");
+            assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+            assert.deepEqual(Object.keys(data), ["addonId"]);
+            assert.equal(is.number(data.addonId), true);
+            assert.equal(data.addonId, 4);
+        }
+
+        const { data, statusCode } = await get(new URL("/addon/evtlogs", HTTP_URL));
+        assert.equal(statusCode, 200, "POST Request must return code 200");
+        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
+
+        assert.equal(data.name, "evtlogs");
+        assert.equal(data.author.username, "fraxken");
+        assert.equal(is.array(data.versions), true);
+        assert.equal(data.versions.length, 1);
+        assert.equal(is.plainObject(data.organisation), true);
+        assert.equal(data.organisation.name, "SlimIO");
+    });
 });
 
