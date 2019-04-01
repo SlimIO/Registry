@@ -43,7 +43,7 @@ DB_PASSWORD=ROOT
     <img src="https://i.imgur.com/h0KRpsa.jpg">
 </p>
 
-# API
+# Endpoints
 
 For all request with a body data, you need to set your headers with:
 - Content-Type: `application/json`
@@ -53,10 +53,16 @@ For all request with a body data, you need to set your headers with:
 | 🔑 | ⚠️ You need to be authenticated to use this route: see **/login** |
 
 <br />
-<details>
-    <summary>GET : /</summary>
 
-Return a JSON payload with the service uptime:
+## Meta endpoints
+
+<details>
+    <summary>GET ·/</summary>
+
+Return service metadata.
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+
 ```js
 {
     uptime: 3403
@@ -65,19 +71,19 @@ Return a JSON payload with the service uptime:
 <br>
 </details>
 
+## User endpoints
+
 <details>
-    <summary>POST : /login</summary>
+    <summary>POST ·/login</summary>
 
-Endpoint to authenticate a user. The HTTP request **body** must contains the following fields:
-```ts
-{
-    username: string,
-    password: string
-}
-```
+Authenticate a user and get an AccessToken.
 
-The API return an access_token which will be required for some endpoints.
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| username | String | Body | ✅ | User name |
+| password | String | Body | ✅ | User password |
 
+Return an AccessToken which will be required for some endpoints.
 ```ts
 {
     access_token: string;
@@ -86,30 +92,34 @@ The API return an access_token which will be required for some endpoints.
 <br>
 </details>
 
-## User
-
 <details>
-    <summary>POST : /users</summary>
+    <summary>POST ·/users</summary>
 
-Endpoint to create a new user. The body must contains a JSON with `username` and `password` field as follow:
-```ts
-{
-    username: string,
-    password: string
-}
-```
+Create a new user.
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| username | String | Body | ✅ | User name |
+| password | String | Body | ✅ | User password |
 
 Return a JSON with the **userId** field.
+```js
+{
+    userId: 1
+}
+```
 <br>
 </details>
 
-## Addon
+## Addon endpoints
 
 <details>
-    <summary>GET : /addon</summary>
+    <summary>GET ·/addon</summary>
 
-Get all addons avaible addons name as a JSON like the following response:
-```json
+Get all available addons.
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+
+```js
 [
     "cpu",
     "memory"
@@ -119,11 +129,15 @@ Get all addons avaible addons name as a JSON like the following response:
 </details>
 
 <details>
-    <summary>GET : /addon/:addonName</summary>
+    <summary>GET ·/addon/{addonName}</summary>
 
-Get a given addon by his name
+Get a given addon by his name.
 
-Return a data structure like:
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| addonName | String | Path | ✅ | User name |
+
+Return a data structure described by the following interface:
 ```ts
 {
     name: string,
@@ -153,41 +167,39 @@ Return a data structure like:
 </details>
 
 <details>
-    <summary>🔑 POST : /addon/publish</summary>
+    <summary>🔑 POST ·/addon/publish</summary>
 
-Create an addon
+Create or update an Addon release. This endpoint require an AccessToken.
 
-Headers:
-```ts
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| name | String | Body | ✅ | Addon name |
+| description | String | Body | ❌ | Addon description |
+| version | String | Body | ✅ | Semver |
+| git | String | Body | ✅ | GIT Url |
+| organisation | String | Body | ❌ | Organisation (if any) |
+
+Return the addon id.
+```js
 {
-    Content-Type: `application/json`,
-    authorization: access_token
+    addonId: 1
 }
 ```
-
-Body Object:
-```ts
-{
-    name: string,
-    description: string,
-    version: string,
-    git: string,
-    organisation?: string
-}
-```
-
-Return an addon id
 
 <br>
 </details>
 
-
-## Organisation
+## Organisation endpoints
 
 <details>
-    <summary>GET : /organisation</summary>
+    <summary>GET ·/organisation</summary>
 
-Get all organisations. Return a data structure like:
+Get all organisations.
+
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+
+Return an JavaScript Object described by the following interface:
 ```ts
 {
     [name: string]: {
@@ -202,8 +214,12 @@ Get all organisations. Return a data structure like:
 </details>
 
 <details>
-    <summary>GET : /organisation/:name</summary>
-Get an organisation by name
+    <summary>GET ·/organisation/{name}</summary>
+Get an organisation by his name.
+
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| name | String | Path | ✅ | Organisation name |
 
 Return a data structure like:
 ```ts
@@ -239,44 +255,14 @@ Return a data structure like:
 </details>
 
 <details>
-    <summary>🔑 POST : /organisation</summary>
-
-Create an organisation
-
-Headers:
-```ts
-{
-    Content-Type: `application/json`,
-    authorization: access_token
-}
-```
-
-Body Object:
-```ts
-{
-    name: string,
-    description: string
-}
-```
-
-Return an organisation id
-
-<br>
-</details>
-
-<details>
     <summary>🔑 POST : /organisation/:orgaName/:userName</summary>
 
-Add an user to an organisation
+Add a user to an organisation.
 
-Headers:
-```ts
-{
-    authorization: access_token
-}
-```
-
-Return an user id
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| orgaName | String | Path | ✅ | Organisation name |
+| userName | String | Path | ✅ | User name |
 
 <br>
 </details>
