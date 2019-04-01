@@ -56,10 +56,10 @@ For all request with a body data, you need to set your headers with:
 
 ## Meta endpoints
 
-<details>
-    <summary>GET ·/</summary>
+<details><summary>GET ·/</summary>
 
 Return service metadata.
+
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
 
@@ -96,6 +96,7 @@ Return an AccessToken which will be required for some endpoints.
     <summary>POST ·/users</summary>
 
 Create a new user.
+
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
 | username | String | Body | ✅ | User name |
@@ -116,6 +117,7 @@ Return a JSON with the **userId** field.
     <summary>GET ·/addon</summary>
 
 Get all available addons.
+
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
 
