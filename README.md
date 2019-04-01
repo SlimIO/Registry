@@ -259,12 +259,24 @@ Return a data structure like:
 <details><summary>🔑 POST : /organisation/:orgaName/:userName</summary>
 <br />
 
-Add a user to an organisation.
+Add a user to an organisation. This endpoint require an AccessToken.
 
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
 | orgaName | String | Path | ✅ | Organisation name |
 | userName | String | Path | ✅ | User name |
+
+> ⚠️ Only Organisation owner can use this endpoint.
+
+Return the following interface:
+```ts
+{
+    createdAt: date,
+    updatedAt: date,
+    organisationId: number,
+    userId: number
+}
+```
 
 <br>
 </details>
