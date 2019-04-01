@@ -348,5 +348,25 @@ japa.group("Endpoints tests", (group) => {
             assert.equal(err.data, "Addon 'network' already in use");
         }
     });
+
+    japa("/addon/publish (Publish - version must be greater)", async(assert) => {
+        try {
+            await post(new URL("/addon/publish", HTTP_URL), {
+                body: {
+                    name: "network",
+                    description: "Network Addon",
+                    version: "0.1.0",
+                    git: "https://github.com/SlimIO"
+                },
+                headers: {
+                    authorization: accessToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "Addon version must be greater than '0.1.0'");
+        }
+    });
 });
 

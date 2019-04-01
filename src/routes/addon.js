@@ -117,7 +117,7 @@ server.post("/publish", isAuthenticated, async(req, res) => {
         const greatestVersion = versions.shift();
 
         if (!is.nullOrUndefined(greatestVersion) && semver.gt(version, greatestVersion) === false) {
-            return send(res, 500, { error: `Addon version must be greater than ${greatestVersion}` });
+            return send(res, 500, `Addon version must be greater than '${greatestVersion}'`);
         }
         await addonExist.addVersion(await req.Version.create({ version }));
 
