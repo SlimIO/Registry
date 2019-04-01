@@ -280,6 +280,21 @@ japa.group("Endpoints tests", (group) => {
         }
     });
 
+    japa("/addon/publish with no body payload", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/addon/publish", HTTP_URL), {
+                body: {},
+                headers: { authorization: accessToken }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+        }
+    });
+
     japa("/addon/publish (Publish an addon as 'fraxken')", async(assert) => {
         {
             const { data, statusCode } = await post(new URL("/addon/publish", HTTP_URL), {
@@ -307,6 +322,31 @@ japa.group("Endpoints tests", (group) => {
 
         assert.equal(data.name, "network");
         assert.equal(data.author.username, "fraxken");
+    });
+
+    japa("/addon/publish (Publish network addon with 'alexandre' Account)", async(assert) => {
+        assert.plan(2);
+        const { data: ret } = await post(new URL("/login", HTTP_URL), {
+            body: { username: "alexandre", password: "admin1953" }
+        });
+
+        try {
+            await post(new URL("/addon/publish", HTTP_URL), {
+                body: {
+                    name: "network",
+                    description: "Network Addon",
+                    version: "0.1.0",
+                    git: "https://github.com/SlimIO"
+                },
+                headers: {
+                    authorization: ret.access_token
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "Addon 'network' already in use");
+        }
     });
 });
 
