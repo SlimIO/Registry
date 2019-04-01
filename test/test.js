@@ -296,6 +296,29 @@ japa.group("Endpoints tests", (group) => {
         }
     });
 
+    japa("/addon/publish (Addon version must be semver)", async(assert) => {
+        assert.plan(3);
+
+        try {
+            await post(new URL("/addon/publish", HTTP_URL), {
+                body: {
+                    name: "network",
+                    description: "Network Addon",
+                    version: "v0.1",
+                    git: "https://github.com/SlimIO"
+                },
+                headers: {
+                    authorization: accessToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+            assert.equal(err.data[0], "semver validation failed on version");
+        }
+    });
+
     japa("/addon/publish (Publish an addon as 'fraxken')", async(assert) => {
         {
             const { data, statusCode } = await post(new URL("/addon/publish", HTTP_URL), {
