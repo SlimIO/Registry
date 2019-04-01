@@ -45,6 +45,7 @@ server.get("/", async(req, res) => {
         return send(res, 200, cleanOrgs);
     }
     catch (error) {
+        /* istanbul ignore next */
         return send(res, 500, error);
     }
 });
@@ -94,24 +95,23 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
     try {
         const organisation = await req.Organisation.findOne({ where: { name: orgaName } });
         if (organisation === null) {
-            return send(res, 204, { error: `Organisation ${orgaName} not found` });
+            return send(res, 500, `Organisation '${orgaName}' not found`);
         }
         if (organisation.ownerId !== req.user.id) {
-            return send(res, 500, { error: "You have no right on this organisation" });
+            return send(res, 401, "You have no right on this organisation");
         }
 
         const user = await req.Users.findOne({ where: { username: userName } });
         if (user === null) {
-            return send(res, 204, { error: `User ${userName} not found` });
+            return send(res, 500, `User ${userName} not found`);
         }
 
         if (await organisation.hasUsers(user)) {
             return send(res, 500, { error: `User ${userName} is already in the Organisation` });
         }
+        const result = await organisation.addUsers(user);
 
-        return send(res, 200, {
-            result: await organisation.addUsers(user)
-        });
+        return send(res, 201, { result });
     }
     catch (error) {
         /* istanbul ignore next */
