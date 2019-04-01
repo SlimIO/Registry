@@ -477,6 +477,29 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(data.organisation.name, "SlimIO");
     });
 
+    japa("/addon/publish (Publish addon on unknown Org)", async(assert) => {
+        assert.plan(2);
+
+        try {
+            await post(new URL("/addon/publish", HTTP_URL), {
+                body: {
+                    name: "evtlogs",
+                    description: "Events logs Addon",
+                    version: "1.0.0",
+                    git: "https://github.com/SlimIO",
+                    organisation: "unknown"
+                },
+                headers: {
+                    authorization: accessToken
+                }
+            });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.data, "Organisation 'unknown' not found");
+        }
+    });
+
     japa("/unknown/fraxken (Organisation Not Found)", async(assert) => {
         assert.plan(2);
 
