@@ -57,6 +57,7 @@ For all request with a body data, you need to set your headers with:
 ## Meta endpoints
 
 <details><summary>GET ·/</summary>
+<br />
 
 Return service metadata.
 
@@ -68,13 +69,13 @@ Return service metadata.
     uptime: 3403
 }
 ```
-<br>
+
 </details>
 
 ## User endpoints
 
-<details>
-    <summary>POST ·/login</summary>
+<details><summary>POST ·/login</summary>
+<br />
 
 Authenticate a user and get an AccessToken.
 
@@ -89,11 +90,11 @@ Return an AccessToken which will be required for some endpoints.
     access_token: string;
 }
 ```
-<br>
+
 </details>
 
-<details>
-    <summary>POST ·/users</summary>
+<details><summary>POST ·/users</summary>
+<br />
 
 Create a new user.
 
@@ -108,13 +109,13 @@ Return a JSON with the **userId** field.
     userId: 1
 }
 ```
-<br>
+
 </details>
 
 ## Addon endpoints
 
-<details>
-    <summary>GET ·/addon</summary>
+<details><summary>GET ·/addon</summary>
+<br />
 
 Get all available addons.
 
@@ -127,11 +128,11 @@ Get all available addons.
     "memory"
 ]
 ```
-<br>
+
 </details>
 
-<details>
-    <summary>GET ·/addon/{addonName}</summary>
+<details><summary>GET ·/addon/{addonName}</summary>
+<br />
 
 Get a given addon by his name.
 
@@ -165,11 +166,10 @@ Return a data structure described by the following interface:
 }
 ```
 
-<br>
 </details>
 
-<details>
-    <summary>🔑 POST ·/addon/publish</summary>
+<details><summary>🔑 POST ·/addon/publish</summary>
+<br />
 
 Create or update an Addon release. This endpoint require an AccessToken.
 
@@ -188,13 +188,12 @@ Return the addon id.
 }
 ```
 
-<br>
 </details>
 
 ## Organisation endpoints
 
-<details>
-    <summary>GET ·/organisation</summary>
+<details><summary>GET ·/organisation</summary>
+<br />
 
 Get all organisations.
 
@@ -215,8 +214,9 @@ Return an JavaScript Object described by the following interface:
 <br>
 </details>
 
-<details>
-    <summary>GET ·/organisation/{name}</summary>
+<details><summary>GET ·/organisation/{name}</summary>
+<br />
+
 Get an organisation by his name.
 
 | Name | Value | Kind | Required? | Notes |
@@ -256,8 +256,8 @@ Return a data structure like:
 <br>
 </details>
 
-<details>
-    <summary>🔑 POST : /organisation/:orgaName/:userName</summary>
+<details><summary>🔑 POST : /organisation/:orgaName/:userName</summary>
+<br />
 
 Add a user to an organisation.
 
