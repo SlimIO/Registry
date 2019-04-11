@@ -7,7 +7,15 @@
     },
     "source": {
         "include": [
-            "index.js"
+            "index.js",
+            "./src/httpServer.js",
+            "./src/models.js",
+            "./src/utils.js",
+            "./src/validationRules.js",
+            "./src/routes/addon.js",
+            "./src/routes/index.js",
+            "./src/routes/organisation.js",
+            "./src/routes/user.js"
         ],
         "exclude": [
             "node_modules",
