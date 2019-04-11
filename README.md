@@ -138,7 +138,7 @@ Get a given addon by his name.
 
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
-| addonName | String | Path | ✅ | User name |
+| addonName | String | Path | ✅ | Addon name |
 
 Return a data structure described by the following interface:
 ```ts
