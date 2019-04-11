@@ -7,12 +7,12 @@ Registry is an **HTTP API** whose main purpose is to manage SlimIO Addons. The A
 
 This project has been inspired by **npm** Registry.
 
-# Requirements
+## Requirements
 
 - Node.js v10 or higher
 - A local [MariaDB](https://mariadb.org/) database (else setup the project for SQLite).
 
-# Getting Started
+## Getting Started
 
 First, clone and install the project
 ```bash
@@ -37,13 +37,13 @@ DB_USER=root
 DB_PASSWORD=ROOT
 ```
 
-# DB Schema
+## DB Schema
 
 <p align="center">
     <img src="https://i.imgur.com/h0KRpsa.jpg">
 </p>
 
-# Endpoints
+## Endpoints
 
 For all request with a body data, you need to set your headers with:
 - Content-Type: `application/json`
@@ -54,7 +54,7 @@ For all request with a body data, you need to set your headers with:
 
 <br />
 
-## Meta endpoints
+### Meta endpoints
 
 <details><summary>GET ·/</summary>
 <br />
@@ -72,7 +72,7 @@ Return service metadata.
 
 </details>
 
-## User endpoints
+### User endpoints
 
 <details><summary>POST ·/login</summary>
 <br />
@@ -112,7 +112,7 @@ Return a JSON with the **userId** field.
 
 </details>
 
-## Addon endpoints
+### Addon endpoints
 
 <details><summary>GET ·/addon</summary>
 <br />
@@ -190,7 +190,7 @@ Return the addon id.
 
 </details>
 
-## Organisation endpoints
+### Organisation endpoints
 
 <details><summary>GET ·/organisation</summary>
 <br />
@@ -281,6 +281,6 @@ Return the following interface:
 <br>
 </details>
 
-# License
+## License
 MIT
 
