@@ -62,3 +62,5 @@ typings/
 database.sqlite
 test/*
 !test/test.js
+jsdoc/
+docs/
