@@ -152,12 +152,12 @@ Return a data structure described by the following interface:
         username: string,
         description: string
     },
-    organisations: {
+    organisation: {
         name: string,
         createdAt: Date,
         updatedAt: Date
     },
-    version: [
+    versions: [
         {
             version: string,
             createdAt: string
