@@ -23,7 +23,7 @@
         "@slimio/is": "^1.5.0",
         "argon2": "^0.21.0",
         "body-parser": "^1.19.0",
-        "dotenv": "^7.0.0",
+        "dotenv": "^8.0.0",
         "indicative": "^5.0.8",
         "jsonwebtoken": "^8.5.1",
         "kleur": "^3.0.3",
