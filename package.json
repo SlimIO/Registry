@@ -32,7 +32,7 @@
         "polka": "^0.5.2",
         "semver": "^6.0.0",
         "semver-sort": "0.0.4",
-        "sequelize": "^5.3.1",
+        "sequelize": "^5.8.4",
         "sqlite3": "^4.0.6"
     },
     "devDependencies": {
