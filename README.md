@@ -37,6 +37,8 @@ DB_USER=root
 DB_PASSWORD=ROOT
 ```
 
+Supported dialect are: `mysql`, `sqlite`, `postgres`, `mssql`.
+
 ## DB Schema
 
 <p align="center">
