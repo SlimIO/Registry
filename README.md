@@ -4,6 +4,7 @@
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![dep](https://img.shields.io/david/SlimIO/Registry.svg)
 ![size](https://img.shields.io/github/repo-size/SlimIO/Registry.svg)
+[![Build Status](https://travis-ci.com/SlimIO/Registry.svg?branch=master)](https://travis-ci.com/SlimIO/Registry)
 
 Registry is an **HTTP API** whose main purpose is to manage SlimIO Addons. The API let you create your own account and manage an  organisation to publish and edit your personal and/or company addon(s).
 
