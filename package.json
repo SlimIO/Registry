@@ -40,7 +40,7 @@
         "@slimio/eslint-config": "^2.0.4",
         "cross-env": "^5.2.0",
         "eslint": "^5.16.0",
-        "httpie": "^1.1.1",
+        "httpie": "^1.1.2",
         "husky": "^2.2.0",
         "japa": "^2.0.10",
         "jsdoc": "^3.5.5",
