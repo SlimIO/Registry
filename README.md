@@ -5,7 +5,7 @@
 ![dep](https://img.shields.io/david/SlimIO/Registry.svg)
 ![size](https://img.shields.io/github/repo-size/SlimIO/Registry.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/SlimIO/Registry/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SlimIO/Registry?targetFile=package.json)
-[![Build Status](https://travis-ci.com/SlimIO/Registry.svg?branch=master)](https://travis-ci.com/SlimIO/Registry)
+[![Build Status](https://travis-ci.com/SlimIO/Registry.svg?branch=master)](https://travis-ci.com/SlimIO/Registry) [![Greenkeeper badge](https://badges.greenkeeper.io/SlimIO/Registry.svg)](https://greenkeeper.io/)
 
 Registry is an **HTTP API** whose main purpose is to manage SlimIO Addons. The API let you create your own account and manage an  organisation to publish and edit your personal and/or company addon(s).
 
