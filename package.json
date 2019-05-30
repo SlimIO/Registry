@@ -31,7 +31,7 @@
         "polka": "^0.5.2",
         "semver": "^6.1.1",
         "semver-sort": "0.0.4",
-        "sequelize": "^5.8.4"
+        "sequelize": "^5.8.7"
     },
     "devDependencies": {
         "@commitlint/cli": "^7.6.1",
