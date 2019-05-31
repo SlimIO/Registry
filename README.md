@@ -5,7 +5,8 @@
 ![dep](https://img.shields.io/david/SlimIO/Registry.svg)
 ![size](https://img.shields.io/github/repo-size/SlimIO/Registry.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/SlimIO/Registry/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SlimIO/Registry?targetFile=package.json)
-[![Build Status](https://travis-ci.com/SlimIO/Registry.svg?branch=master)](https://travis-ci.com/SlimIO/Registry) [![Greenkeeper badge](https://badges.greenkeeper.io/SlimIO/Registry.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.com/SlimIO/Registry.svg?branch=master)](https://travis-ci.com/SlimIO/Registry)
+[![Greenkeeper badge](https://badges.greenkeeper.io/SlimIO/Registry.svg)](https://greenkeeper.io/)
 
 Registry is an **HTTP API** whose main purpose is to manage SlimIO Addons. The API let you create your own account and manage an  organisation to publish and edit your personal and/or company addon(s).
 
@@ -286,6 +287,25 @@ Return the following interface:
 
 <br>
 </details>
+
+## Dependencies
+
+|Name|Refactoring|Security Risk|Usage|
+|---|---|---|---|
+|[@polka/send-type]()|Minor|Low|TBC|
+|[@slimio/is](https://github.com/SlimIO/is#readme)|Minor|Low|Type Checker|
+|[argon2](https://github.com/ranisalt/node-argon2#readme)|⚠️Major|High|Crypto package|
+|[body-parser](https://github.com/expressjs/body-parser#readme)|Minor|High|Body Parser|
+|[dotenv](https://github.com/motdotla/dotenv#readme)|Minor|Low|Load local .env in process.env|
+|[indicative](https://github.com/poppinss/indicative#readme)|Minor|Low|Validator|
+|[jsonwebtoken](https://github.com/auth0/node-jsonwebtoken#readme)|⚠️Major|High|JWT Token|
+|[kleur](https://github.com/lukeed/kleur#readme)|Minor|Low|Colors for TTY|
+|[make-promises-safe](https://github.com/mcollina/make-promises-safe#readme)|⚠️Major|Medium|Force Node.js DEP00018|
+|[polka]()|⚠️Major|Low|HTTP Server|
+|[semver](https://github.com/npm/node-semver#readme)|Minor|Low|SemVer validation|
+|[semver-sort](https://github.com/ragingwind/semver-sort#readme)|Minor|Low|Sort SemVer versions|
+|[sequelize](http://docs.sequelizejs.com/)|⚠️Major|High|ORM|
+|[sqlite3](http://github.com/mapbox/node-sqlite3)|⚠️Major|High|SQLite|
 
 ## License
 MIT
