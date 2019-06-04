@@ -13,12 +13,13 @@ const server = require("./src/httpServer");
 const models = require("./src/models");
 
 // CONSTANTS
-const PORT = process.env.PORT || 1337;
+const PORT = process.env.PORT || 4800;
 const DB_OPTIONS = {
     dialect: process.env.DB_DIALECT || "sqlite",
     database: process.env.DB_NAME || "registry",
     username: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || null
+    password: process.env.DB_PASSWORD || null,
+    logging: false
 };
 
 if (process.env.DB_DIALECT === "sqlite") {
