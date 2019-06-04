@@ -5,7 +5,7 @@ require("dotenv").config();
 const { join } = require("path");
 
 // Require Third-party Dependencies
-const { yellow } = require("kleur");
+const { yellow, white } = require("kleur");
 const Sequelize = require("sequelize");
 
 // Require Internal Dependencies
@@ -13,7 +13,7 @@ const server = require("./src/httpServer");
 const models = require("./src/models");
 
 // CONSTANTS
-const PORT = process.env.PORT || 4800;
+const PORT = process.env.PORT || 1338;
 const DB_OPTIONS = {
     dialect: process.env.DB_DIALECT || "sqlite",
     database: process.env.DB_NAME || "registry",
@@ -32,7 +32,7 @@ if (process.env.DB_DIALECT === "sqlite") {
  * @returns {Promise<void>}
  */
 async function main() {
-    console.log(` > open SQLite database: ${yellow("./database.sqlite")}`);
+    console.log(white().bold(` > init SQLite database: ${yellow().bold(join(__dirname, "database.sqlite"))}`));
     const sequelize = new Sequelize(DB_OPTIONS);
     const tables = models(sequelize);
 
@@ -44,7 +44,7 @@ async function main() {
     });
 
     server.listen(PORT, () => {
-        console.log(`HTTP Server is listening (running) on port ${yellow(PORT)}`);
+        console.log(white().bold(`HTTP Server is listening on port ${yellow().bold(PORT)}`));
     });
 }
 main().catch(console.error);
