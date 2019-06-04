@@ -35,6 +35,7 @@ async function main() {
     console.log(white().bold(` > init SQLite database: ${yellow().bold(join(__dirname, "database.sqlite"))}`));
     const sequelize = new Sequelize(DB_OPTIONS);
     const tables = models(sequelize);
+    let isClosed = false;
 
     await sequelize.sync();
 
@@ -46,5 +47,18 @@ async function main() {
     server.listen(PORT, () => {
         console.log(white().bold(`HTTP Server is listening on port ${yellow().bold(PORT)}`));
     });
+
+    async function close() {
+        if (isClosed) {
+            return;
+        }
+        isClosed = true;
+        console.log(white().bold("Exiting HTTP Server!"));
+        await sequelize.close();
+        server.server.close();
+    }
+
+    process.once("exit", close);
+    process.once("SIGINT", close);
 }
 main().catch(console.error);
