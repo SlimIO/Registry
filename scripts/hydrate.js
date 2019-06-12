@@ -60,10 +60,13 @@ async function main() {
         });
 
         const { name, description, version } = JSON.parse(data);
+        const cleanName = name.charAt(0) === "@" ? name.split("/")[1] : name;
 
         console.log(`Create addon '${fullName}'`);
         await tables.Addons.create({
-            name, description, version,
+            name: cleanName,
+            description,
+            version,
             authorId: user.id,
             git: `https://github.com/${fullName}.git`,
             organisationId: org.id
