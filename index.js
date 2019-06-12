@@ -7,6 +7,7 @@ const { join } = require("path");
 // Require Third-party Dependencies
 const { yellow, white } = require("kleur");
 const Sequelize = require("sequelize");
+const rateLimiter = require("express-rate-limit");
 
 // Require Internal Dependencies
 const server = require("./src/httpServer");
@@ -39,6 +40,10 @@ async function main() {
 
     await sequelize.sync();
 
+    server.use(rateLimiter({
+        windowMs: 60 * 1000,
+        max: 100
+    }));
     server.use((req, res, next) => {
         Object.assign(req, tables);
         next();
