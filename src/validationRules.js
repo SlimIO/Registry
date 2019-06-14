@@ -20,6 +20,12 @@ const user = {
     password: "required|string|min:6"
 };
 
+const userRegistration = {
+    username: "required|string|max:40",
+    password: "required|string|min:6",
+    email: "required|email"
+};
+
 const addon = {
     addonName: "required|string|min:2|max:35"
 };
@@ -32,5 +38,5 @@ const publish = {
 };
 
 module.exports = {
-    user, addon, publish
+    user, userRegistration, addon, publish
 };

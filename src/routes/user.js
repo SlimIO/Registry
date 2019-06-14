@@ -4,9 +4,14 @@ const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
 const { validate } = require("indicative");
+const sequelize = require("sequelize");
+const uuid = require("uuid/v4");
 
 // Require Internal Dependencies
 const rules = require("../validationRules");
+
+// Globals
+const Op = sequelize.Op;
 
 // Create router
 const server = polka();
@@ -14,23 +19,31 @@ const server = polka();
 // create user endpoint
 server.post("/", async(req, res) => {
     try {
-        await validate(req.body, rules.user);
+        await validate(req.body, rules.userRegistration);
     }
     catch (err) {
         return send(res, 500, err.map((row) => row.message));
     }
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
 
-    const exist = await req.Users.findOne({ where: { username } });
+    const exist = await req.Users.findOne({ where: {
+        [Op.or]: [{ username }, { email }]
+    } });
     if (!is.nullOrUndefined(exist)) {
-        return send(res, 500, `The '${username}' username is already in use`);
+        return send(res, 500, "Sorry! Seem you have already registered an account with this email/username.");
     }
 
+    // TODO: Send email to activate account
+    const token = uuid();
+
     const user = await req.Users.create({
-        username, password: await argon2.hash(password)
+        username, email, password: await argon2.hash(password)
     });
 
-    return send(res, 201, { userId: user.id });
+    const userId = user.id;
+    await req.Tokens.create({ token, userId });
+
+    return send(res, 201, { userId });
 });
 
 // all users endpoint
