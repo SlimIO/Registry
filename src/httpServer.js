@@ -33,10 +33,10 @@ server.post("/login", async(req, res) => {
 
     const user = await req.Users.findOne({
         attributes: ["username", "password", "id"],
-        where: { username }
+        where: { username, active: true }
     });
     if (user === null) {
-        return send(res, 500, "User not found");
+        return send(res, 500, "User not found or not active");
     }
 
     // Verifying password
