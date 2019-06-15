@@ -15,7 +15,6 @@ function exportModels(database) {
             defaultValue: false
         },
         email: {
-            primaryKey: true,
             type: Sequelize.STRING,
             allowNull: false,
             validate: {

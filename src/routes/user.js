@@ -6,6 +6,7 @@ const argon2 = require("argon2");
 const { validate } = require("indicative");
 const sequelize = require("sequelize");
 const uuid = require("uuid/v4");
+const nodemailer = require("nodemailer");
 
 // Require Internal Dependencies
 const rules = require("../validationRules");
@@ -15,6 +16,20 @@ const Op = sequelize.Op;
 
 // Create router
 const server = polka();
+
+async function createTransporter() {
+    // Generate test SMTP service account from ethereal.email
+    // Only needed if you don't have a real mail account for testing
+    const { user, pass } = await nodemailer.createTestAccount();
+
+    // create reusable transporter object using the default SMTP transport
+    return nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false,
+        auth: { user, pass }
+    });
+}
 
 // create user endpoint
 server.post("/", async(req, res) => {
@@ -33,8 +48,16 @@ server.post("/", async(req, res) => {
         return send(res, 500, "Sorry! Seem you have already registered an account with this email/username.");
     }
 
-    // TODO: Send email to activate account
     const token = uuid();
+    const transporter = await createTransporter();
+    const info = await transporter.sendMail({
+        from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
+        to: email,
+        subject: "SlimIO Registry Account Registration",
+        text: `Register your account with the following token: ${token}`
+    });
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     const user = await req.Users.create({
         username, email, password: await argon2.hash(password)
