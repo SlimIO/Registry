@@ -49,14 +49,14 @@ server.post("/", async(req, res) => {
     }
 
     const token = uuid();
-    const transporter = await createTransporter();
-    const info = await transporter.sendMail({
-        from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
-        to: email,
-        subject: "SlimIO Registry Account Registration",
-        text: `Register your account with the following token: ${token}`
-    });
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // const transporter = await createTransporter();
+    // const info = await transporter.sendMail({
+    //     from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
+    //     to: email,
+    //     subject: "SlimIO Registry Account Registration",
+    //     text: `Register your account with the following token: ${token}`
+    // });
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     const user = await req.Users.create({
         username, email, password: await argon2.hash(password)
@@ -65,7 +65,7 @@ server.post("/", async(req, res) => {
     const userId = user.id;
     await req.Tokens.create({ token, userId });
 
-    return send(res, 201);
+    return send(res, 201, {});
 });
 
 server.post("/activeAccount", async(req, res) => {
@@ -74,19 +74,24 @@ server.post("/activeAccount", async(req, res) => {
         return send(res, 500, "body.token must be a string");
     }
 
-    const row = await req.Tokens.findOne({ where: { token } });
-    if (row === null) {
-        return send(res, 500, "unable to activate account");
+    try {
+        const row = await req.Tokens.findOne({ where: { token } });
+        if (row === null) {
+            return send(res, 500, "unable to activate account");
+        }
+
+        const [count] = await req.Users.update({ active: true }, { where: { id: row.userId } });
+        if (count !== 1) {
+            return send(res, 500, "unable to activate account");
+        }
+
+        await req.Tokens.destroy({ where: { id: row.id } });
+
+        return send(res, 200, {});
     }
-
-    const [count] = await req.Users.update({ active: true }, { where: { id: row.userId } });
-    if (count !== 1) {
-        return send(res, 500, "unable to activate account");
+    catch (err) {
+        return send(res, 500, err.message);
     }
-
-    await req.Tokens.delete({ where: { id: row.id } });
-
-    return send(res, 200);
 });
 
 // all users endpoint

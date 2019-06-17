@@ -24,6 +24,7 @@ let sequelize;
 japa.group("Endpoints tests", (group) => {
     let accessToken = null;
     let adminToken = null;
+    let tokenTable = null;
 
     group.before(async() => {
         sequelize = new Sequelize(DB_PATH, "username", null, {
@@ -34,15 +35,20 @@ japa.group("Endpoints tests", (group) => {
 
         const tables = models(sequelize);
         await sequelize.sync({ force: true });
+        tokenTable = tables.Tokens;
 
         // Hydrate DB
         const user = await tables.Users.create({
             username: "admin",
+            active: true,
+            email: "admin.mail@gmail.com",
             password: await argon2.hash("admin1953")
         });
 
         await tables.Users.create({
             username: "alexandre",
+            active: true,
+            email: "alexandre.malaj@gmail.com",
             password: await argon2.hash("admin1953")
         });
 
@@ -109,23 +115,37 @@ japa.group("Endpoints tests", (group) => {
 
         try {
             await post(new URL("/users", HTTP_URL), {
-                body: { username: "admin", password: "admin1953" }
+                body: { username: "admin", email: "admin.mail@gmail.com", password: "admin1953" }
             });
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "The 'admin' username is already in use");
+            assert.equal(err.data, "Sorry! Seem you have already registered an account with this email/username.");
         }
     });
 
     japa("/users create 'fraxken' user", async(assert) => {
-        const { data, statusCode } = await post(new URL("/users", HTTP_URL), {
-            body: { username: "fraxken", password: "p@ssword" }
-        });
-        assert.equal(statusCode, 201, "POST Request must return code 201");
-        assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
-        assert.deepEqual(Object.keys(data), ["userId"], "Returned data must only have 'userId' field");
-        assert.equal(is.number(data.userId), true, "userId must be typeof number");
+        {
+            const { data, statusCode } = await post(new URL("/users", HTTP_URL), {
+                body: { username: "fraxken", email: "gentilhomme.thomas@gmail.com", password: "p@ssword" }
+            });
+            assert.equal(statusCode, 201, "POST Request must return code 201");
+            assert.deepEqual(data, {}, "Return an empty Object");
+        }
+
+        // Retrieve the token and active it for the sake of the test suite
+        {
+            const [row] = await tokenTable.findAll();
+
+            const { data, statusCode } = await post(new URL("/users/activeAccount", HTTP_URL), {
+                body: { token: row.token }
+            });
+            assert.equal(statusCode, 200, "POST Request must return code 200");
+            assert.deepEqual(data, {}, "Return an empty Object");
+        }
+
+        const tokens = await tokenTable.findAll();
+        assert.equal(tokens.length, 0, "There must be no tokens left!");
     });
 
     japa("/login with no body payload", async(assert) => {
@@ -145,12 +165,12 @@ japa.group("Endpoints tests", (group) => {
 
         try {
             await post(new URL("/login", HTTP_URL), {
-                body: { username: "winni", password: "l'ourson" }
+                body: { username: "winni", email: "unknown@gmail.com", password: "l'ourson" }
             });
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "User not found");
+            assert.equal(err.data, "User not found or not active");
         }
     });
 
@@ -159,7 +179,7 @@ japa.group("Endpoints tests", (group) => {
 
         try {
             await post(new URL("/login", HTTP_URL), {
-                body: { username: "admin", password: "incorrect" }
+                body: { username: "admin", email: "admin.mail@gmail.com", password: "incorrect" }
             });
         }
         catch (err) {
