@@ -22,6 +22,7 @@ const DB_OPTIONS = {
     password: process.env.DB_PASSWORD || null,
     logging: false
 };
+const CLEAN_INTERVAL_MS = 24 * 60 * 60000;
 
 if (process.env.DB_DIALECT === "sqlite") {
     DB_OPTIONS.storage = join(__dirname, "database.sqlite");
@@ -39,6 +40,26 @@ async function main() {
     let isClosed = false;
 
     await sequelize.sync();
+
+    // Cleanup Interval
+    setInterval(async() => {
+        const now = new Date().getTime();
+
+        try {
+            const deletedCount = await tables.Users.delete({
+                where: {
+                    active: false,
+                    createdAt: {
+                        [Sequelize.Op.lt]: now - CLEAN_INTERVAL_MS
+                    }
+                }
+            });
+            console.log(deletedCount);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }, CLEAN_INTERVAL_MS);
 
     server.use(rateLimiter({
         windowMs: 60 * 1000,
