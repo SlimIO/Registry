@@ -40,6 +40,8 @@ async function main() {
     // Create default user
     const user = await tables.Users.create({
         username: "administrator",
+        active: true,
+        email: "gentilhomme.thomas@gmail.com",
         password: await argon2.hash(process.argv[2] || "administrator")
     });
 
