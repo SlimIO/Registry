@@ -66,7 +66,28 @@ server.post("/", async(req, res) => {
     const userId = user.id;
     await req.Tokens.create({ token, userId });
 
-    return send(res, 201, { userId });
+    return send(res, 201, { token });
+});
+
+server.post("/activeAccount", async(req, res) => {
+    const { token } = req.body;
+    if (typeof token !== "string") {
+        return send(res, 500, "body.token must be a string");
+    }
+
+    const row = await req.Tokens.findOne({ where: { token } });
+    if (row === null) {
+        return send(res, 500, "unable to activate account");
+    }
+
+    const [count] = await req.Users.update({ active: true }, { where: { id: row.userId } });
+    if (count !== 1) {
+        return send(res, 500, "unable to activate account");
+    }
+
+    await req.Tokens.delete({ where: { id: row.id } });
+
+    return send(res, 200);
 });
 
 // all users endpoint
