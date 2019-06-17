@@ -49,14 +49,14 @@ server.post("/", async(req, res) => {
     }
 
     const token = uuid();
-    // const transporter = await createTransporter();
-    // const info = await transporter.sendMail({
-    //     from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
-    //     to: email,
-    //     subject: "SlimIO Registry Account Registration",
-    //     text: `Register your account with the following token: ${token}`
-    // });
-    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    const transporter = await createTransporter();
+    const info = await transporter.sendMail({
+        from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
+        to: email,
+        subject: "SlimIO Registry Account Registration",
+        text: `Register your account with the following token: ${token}`
+    });
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     const user = await req.Users.create({
         username, email, password: await argon2.hash(password)
