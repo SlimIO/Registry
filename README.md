@@ -84,7 +84,7 @@ Return service metadata.
 <details><summary>POST ·/login</summary>
 <br />
 
-Authenticate a user and get an AccessToken.
+Authenticate a user and get an AccessToken. The account must be activated before to success.
 
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
@@ -103,18 +103,32 @@ Return an AccessToken which will be required for some endpoints.
 <details><summary>POST ·/users</summary>
 <br />
 
-Create a new user.
+Create a new **inactive** user. The account will be deleted after 24 hours if no activation occur.
 
 | Name | Value | Kind | Required? | Notes |
 | --- | --- | --- | --- | --- |
 | username | String | Body | ✅ | User name |
 | password | String | Body | ✅ | User password |
 
-Return a JSON with the **userId** field.
+Return an empty JSON on success with a code 201.
 ```js
-{
-    userId: 1
-}
+{}
+```
+
+</details>
+
+<details><summary>POST ·/users/activeAccount</summary>
+<br />
+
+Activate an account with the activation token received by email.
+
+| Name | Value | Kind | Required? | Notes |
+| --- | --- | --- | --- | --- |
+| token | String | Body | ✅ | Activation token |
+
+Return an empty JSON on success with code 200.
+```js
+{}
 ```
 
 </details>
