@@ -56,7 +56,6 @@ server.post("/", async(req, res) => {
         subject: "SlimIO Registry Account Registration",
         text: `Register your account with the following token: ${token}`
     });
-    console.log("Message sent: %s", info.messageId);
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     const user = await req.Users.create({
@@ -66,7 +65,7 @@ server.post("/", async(req, res) => {
     const userId = user.id;
     await req.Tokens.create({ token, userId });
 
-    return send(res, 201, { token });
+    return send(res, 201);
 });
 
 server.post("/activeAccount", async(req, res) => {
