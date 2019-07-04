@@ -1,80 +1,84 @@
 {
-    "name": "@slimio/registry",
-    "version": "1.1.0",
-    "description": "SlimIO Addons registry",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js",
-        "prepublishOnly": "pkg-ok",
-        "test": "cross-env psp && node test/test.js",
-        "doc": "jsdoc -c ./jsdoc.json -r -R ./README.md -P ./package.json --verbose",
-        "coverage": "nyc npm test",
-        "report": "nyc report --reporter=html"
-    },
-    "keywords": [
-        "SlimIO",
-        "Addon",
-        "Registry"
-    ],
-    "author": "SlimIO",
-    "license": "MIT",
-    "dependencies": {
-        "@polka/send-type": "^0.5.2",
-        "@slimio/is": "^1.5.1",
-        "argon2": "^0.24.0",
-        "body-parser": "^1.19.0",
-        "dotenv": "^8.0.0",
-        "express-rate-limit": "^5.0.0",
-        "indicative": "^5.0.8",
-        "jsonwebtoken": "^8.5.1",
-        "kleur": "^3.0.3",
-        "make-promises-safe": "^5.0.0",
-        "nodemailer": "^6.2.1",
-        "polka": "^0.5.2",
-        "semver": "^6.1.1",
-        "semver-sort": "0.0.4",
-        "sequelize": "^5.8.11",
-        "sqlite3": "^4.0.9",
-        "uuid": "^3.3.2"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^8.0.0",
-        "@commitlint/config-conventional": "^8.0.0",
-        "@escommunity/minami": "^1.0.0",
-        "@slimio/eslint-config": "^2.0.4",
-        "@slimio/psp": "^0.5.3",
-        "cross-env": "^5.2.0",
-        "eslint": "^5.16.0",
-        "httpie": "^1.1.2",
-        "husky": "^2.4.1",
-        "japa": "^2.0.10",
-        "jsdoc": "^3.6.2",
-        "nyc": "^14.1.1",
-        "pkg-ok": "^2.3.1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/SlimIO/addon-registry.git"
-    },
-    "bugs": {
-        "url": "https://github.com/SlimIO/addon-registry/issues"
-    },
-    "homepage": "https://github.com/SlimIO/addon-registry#readme",
-    "engines": {
-        "node": ">=10"
-    },
-    "husky": {
-        "hooks": {
-            "pre-push": "cross-env eslint index.js src/*.js src/routes/*.js && npm test",
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
-    "nyc": {
-        "check-coverage": true,
-        "per-file": false,
-        "lines": 98,
-        "statements": 98,
-        "functions": 98,
-        "branches": 90
+  "name": "@slimio/registry",
+  "version": "1.1.0",
+  "description": "SlimIO Addons registry",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "prepublishOnly": "pkg-ok",
+    "test": "cross-env psp && node test/test.js",
+    "doc": "jsdoc -c ./jsdoc.json -r -R ./README.md -P ./package.json --verbose",
+    "coverage": "nyc npm test",
+    "report": "nyc report --reporter=html",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "keywords": [
+    "SlimIO",
+    "Addon",
+    "Registry"
+  ],
+  "author": "SlimIO",
+  "license": "MIT",
+  "dependencies": {
+    "@polka/send-type": "^0.5.2",
+    "@slimio/is": "^1.5.1",
+    "argon2": "^0.24.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express-rate-limit": "^5.0.0",
+    "indicative": "^5.0.8",
+    "jsonwebtoken": "^8.5.1",
+    "kleur": "^3.0.3",
+    "make-promises-safe": "^5.0.0",
+    "nodemailer": "^6.2.1",
+    "polka": "^0.5.2",
+    "semver": "^6.1.1",
+    "semver-sort": "0.0.4",
+    "sequelize": "^5.8.11",
+    "sqlite3": "^4.0.9",
+    "uuid": "^3.3.2",
+    "snyk": "^1.189.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.0.0",
+    "@commitlint/config-conventional": "^8.0.0",
+    "@escommunity/minami": "^1.0.0",
+    "@slimio/eslint-config": "^2.0.4",
+    "@slimio/psp": "^0.5.3",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "httpie": "^1.1.2",
+    "husky": "^2.4.1",
+    "japa": "^2.0.10",
+    "jsdoc": "^3.6.2",
+    "nyc": "^14.1.1",
+    "pkg-ok": "^2.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlimIO/addon-registry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SlimIO/addon-registry/issues"
+  },
+  "homepage": "https://github.com/SlimIO/addon-registry#readme",
+  "engines": {
+    "node": ">=10"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "cross-env eslint index.js src/*.js src/routes/*.js && npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": false,
+    "lines": 98,
+    "statements": 98,
+    "functions": 98,
+    "branches": 90
+  },
+  "snyk": true
 }
