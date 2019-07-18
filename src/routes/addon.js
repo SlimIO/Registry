@@ -6,7 +6,7 @@ const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const semver = require("semver");
 const semverSort = require("semver-sort");
-const { validate } = require("indicative");
+const { validate } = require("indicative/validator");
 
 // Require Internal Dependencies
 const { isAuthenticated } = require("../utils.js");
@@ -34,7 +34,7 @@ server.get("/:addonName", async(req, res) => {
         await validate(req.params, rules.addon);
     }
     catch (err) {
-        return send(res, 500, err.map((row) => row.message));
+        return send(res, 500, err.message);
     }
     const addonName = req.params.addonName;
 
@@ -76,7 +76,7 @@ server.post("/publish", isAuthenticated, async(req, res) => {
         await validate(req.body, rules.publish);
     }
     catch (err) {
-        return send(res, 500, err.map((row) => row.message));
+        return send(res, 500, err.message);
     }
     const { name, description, version, git, organisation } = req.body;
     const authorId = req.user.id;

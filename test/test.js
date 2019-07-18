@@ -106,7 +106,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+            assert.equal(is.string(err.data), true, "Returned data must be an string");
         }
     });
 
@@ -156,7 +156,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+            assert.equal(is.string(err.data), true, "Returned data must be a string");
         }
     });
 
@@ -215,7 +215,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+            assert.equal(is.string(err.data), true, "Returned data must be a string");
         }
     });
 
@@ -312,7 +312,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(is.array(err.data), true, "Returned data must be an Array");
+            assert.equal(is.string(err.data), true, "Returned data must be a string");
         }
     });
 
@@ -334,8 +334,8 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(is.array(err.data), true, "Returned data must be an Array");
-            assert.equal(err.data[0], "semver validation failed on version");
+            assert.equal(is.string(err.data), true, "Returned data must be a string");
+            assert.equal(err.data, "Internal Server Error");
         }
     });
 

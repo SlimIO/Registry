@@ -1,42 +1,79 @@
 "use strict";
 
 // Require Third-party Dependencies
-const { validations } = require("indicative");
+const { validations, extend } = require("indicative/validator");
+const { getValue } = require("indicative-utils");
 const semver = require("semver");
 
-// eslint-disable-next-line
-validations.semver = function (data, field, message, args, get) {
-    return new Promise((resolve, reject) => {
-        const fieldValue = get(data, field);
+extend("semver", {
+    async: false,
+    validate(data, field) {
+        const fieldValue = getValue(data, field);
 
-        if (fieldValue && semver.valid(fieldValue) === null) {
-            return reject(message);
-        }
-
-        return resolve("validation passed");
-    });
-};
+        return !(fieldValue && semver.valid(fieldValue) === null);
+    }
+});
 
 const user = {
-    username: "required|string|max:40",
-    password: "required|string|min:6"
+    username: [
+        validations.required(),
+        validations.string(),
+        validations.max([40])
+    ],
+    password: [
+        validations.required(),
+        validations.string(),
+        validations.min([6])
+    ]
 };
 
 const userRegistration = {
-    username: "required|string|max:40",
-    password: "required|string|min:6",
-    email: "required|email"
+    username: [
+        validations.required(),
+        validations.string(),
+        validations.max([40])
+    ],
+    password: [
+        validations.required(),
+        validations.string(),
+        validations.min([6])
+    ],
+    email: [
+        validations.required(),
+        validations.email()
+    ]
 };
 
 const addon = {
-    addonName: "required|string|min:2|max:35"
+    addonName: [
+        validations.required(),
+        validations.string(),
+        validations.min([2]),
+        validations.max([35])
+    ]
 };
 
 const publish = {
-    name: "required|string|min:2|max:35",
-    description: "string|max:120",
-    git: "required|string|max:120",
-    version: "required|string|semver"
+    name: [
+        validations.required(),
+        validations.string(),
+        validations.min([2]),
+        validations.max([35])
+    ],
+    description: [
+        validations.string(),
+        validations.max([120])
+    ],
+    git: [
+        validations.required(),
+        validations.string(),
+        validations.max([120])
+    ],
+    version: [
+        validations.required(),
+        validations.string(),
+        validations.semver()
+    ]
 };
 
 module.exports = {

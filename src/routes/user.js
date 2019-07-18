@@ -5,7 +5,7 @@ const polka = require("polka");
 const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
-const { validate } = require("indicative");
+const { validate } = require("indicative/validator");
 const sequelize = require("sequelize");
 const uuid = require("uuid/v4");
 const nodemailer = require("nodemailer");
@@ -44,7 +44,7 @@ server.post("/", async(req, res) => {
         await validate(req.body, rules.userRegistration);
     }
     catch (err) {
-        return send(res, 500, err.map((row) => row.message));
+        return send(res, 500, err.message);
     }
     const { username, password, email } = req.body;
 

@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
-const { validate } = require("indicative");
+const { validate } = require("indicative/validator");
 
 // Require Internal Dependencies
 const { user, addon, organisation } = require("./routes");
@@ -29,7 +29,7 @@ server.post("/login", async(req, res) => {
         await validate(req.body, rules.user);
     }
     catch (err) {
-        return send(res, 500, err.map((row) => row.message));
+        return send(res, 500, err.message);
     }
     const { username, password } = req.body;
 
