@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Third-party Dependencies
 const polka = require("polka");
 const send = require("@polka/send-type");
@@ -17,6 +19,11 @@ const Op = sequelize.Op;
 // Create router
 const server = polka();
 
+/**
+ * @async
+ * @function createTransporter
+ * @returns {Promise<Mail>}
+ */
 async function createTransporter() {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing

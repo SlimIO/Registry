@@ -1,3 +1,5 @@
+"use strict";
+
 require("make-promises-safe");
 require("dotenv").config();
 
@@ -74,6 +76,11 @@ async function main() {
         console.log(white().bold(`HTTP Server is listening on port ${yellow().bold(PORT)}`));
     });
 
+    /**
+     * @async
+     * @function close
+     * @returns {Promise<void>}
+     */
     async function close() {
         if (isClosed) {
             return;

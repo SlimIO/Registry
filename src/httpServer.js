@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Third-party Dependencies
 const polka = require("polka");
 const bodyParser = require("body-parser");

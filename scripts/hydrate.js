@@ -1,3 +1,5 @@
+"use strict";
+
 require("dotenv").config();
 require("make-promises-safe");
 
@@ -20,6 +22,11 @@ const ADDONS = [
     "SlimIO/ihm"
 ];
 
+/**
+ * @async
+ * @function main
+ * @returns {Promise<void>}
+ */
 async function main() {
     try {
         await unlink(DB_PATH);

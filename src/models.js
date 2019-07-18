@@ -1,6 +1,13 @@
+"use strict";
+
 // Require Third-party Dependencies
 const Sequelize = require("sequelize");
 
+/**
+ * @function exportModels
+ * @param {*} database
+ * @returns {any}
+ */
 function exportModels(database) {
     /* eslint-disable new-cap */
     const Users = database.define("users", {

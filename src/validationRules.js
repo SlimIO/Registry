@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Third-party Dependencies
 const { validations } = require("indicative");
 const semver = require("semver");
