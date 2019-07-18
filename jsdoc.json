@@ -15,7 +15,8 @@
             "./src/routes/addon.js",
             "./src/routes/index.js",
             "./src/routes/organisation.js",
-            "./src/routes/user.js"
+            "./src/routes/user.js",
+            "./scripts/hydrate.js"
         ],
         "exclude": [
             "node_modules",
