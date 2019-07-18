@@ -25,6 +25,7 @@
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "express-rate-limit": "^5.0.0",
+    "httpie": "^1.1.2",
     "indicative": "^5.0.8",
     "jsonwebtoken": "^8.5.1",
     "kleur": "^3.0.3",
@@ -38,14 +39,13 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.0.0",
+    "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.0.0",
     "@escommunity/minami": "^1.0.0",
     "@slimio/eslint-config": "^2.0.4",
     "@slimio/psp": "^0.5.3",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
-    "httpie": "^1.1.2",
     "husky": "^2.4.1",
     "japa": "^2.0.10",
     "jsdoc": "^3.6.2",
