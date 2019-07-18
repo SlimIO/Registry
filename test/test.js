@@ -146,7 +146,7 @@ japa.group("Endpoints tests", (group) => {
 
         const tokens = await tokenTable.findAll();
         assert.equal(tokens.length, 0, "There must be no tokens left!");
-    }).timeout(5000);
+    }).timeout(9000);
 
     japa("/login with no body payload", async(assert) => {
         assert.plan(2);
