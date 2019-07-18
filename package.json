@@ -34,7 +34,7 @@
     "polka": "^0.5.2",
     "semver": "^6.2.0",
     "semver-sort": "0.0.4",
-    "sequelize": "^5.8.11",
+    "sequelize": "^5.10.1",
     "sqlite3": "^4.0.9",
     "uuid": "^3.3.2"
   },
