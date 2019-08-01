@@ -16,6 +16,11 @@
     "Addon",
     "Registry"
   ],
+  "files": [
+      "index.js",
+      "src/**/*.js",
+      "scripts"
+  ],
   "author": "SlimIO",
   "license": "MIT",
   "dependencies": {
