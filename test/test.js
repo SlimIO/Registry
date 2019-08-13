@@ -460,7 +460,7 @@ japa.group("Endpoints tests", (group) => {
 
         assert.equal(statusCode, 201, "POST Request must return code 201");
         assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
-        assert.deepEqual(Object.keys(data), ["createdAt", "updatedAt", "organisationId", "userId"]);
+        assert.deepEqual(Object.keys(data).sort(), ["createdAt", "updatedAt", "organisationId", "userId"].sort());
     });
 
     japa("/addon/publish (Publish addon on SlimIO Org)", async(assert) => {
