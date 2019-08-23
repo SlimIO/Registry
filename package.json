@@ -40,7 +40,7 @@
     "semver": "^6.3.0",
     "semver-sort": "0.0.4",
     "sequelize": "^5.16.0",
-    "sqlite3": "^4.0.9",
+    "sqlite3": "^4.1.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
