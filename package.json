@@ -41,7 +41,7 @@
     "semver-sort": "0.0.4",
     "sequelize": "^5.16.0",
     "sqlite3": "^4.1.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",
