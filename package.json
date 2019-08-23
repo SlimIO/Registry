@@ -28,7 +28,7 @@
     "@slimio/is": "^1.5.1",
     "argon2": "^0.24.0",
     "body-parser": "^1.19.0",
-    "dotenv": "^8.0.0",
+    "dotenv": "^8.1.0",
     "express-rate-limit": "^5.0.0",
     "httpie": "^1.1.2",
     "indicative": "^7.2.0",
