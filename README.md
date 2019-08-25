@@ -14,7 +14,7 @@ This project has been inspired by **npm** Registry.
 
 ## Requirements
 
-- Node.js v10 or higher
+- [Node.js](https://nodejs.org/en/) v10 or higher
 - A local [MariaDB](https://mariadb.org/) database (else setup the project for SQLite).
 
 ## Getting Started
