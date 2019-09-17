@@ -19,14 +19,16 @@ This project has been inspired by **npm** Registry.
 
 ## Getting Started
 
-First, clone and install the project
 ```bash
 $ git clone https://github.com/SlimIO/Registry.git
 $ cd Registry
 $ npm ci
+$ npm start
 ```
 
-Then, you must create a file named `.env` at the root of the project.
+## Environment Variables
+
+The server can be configured by setting up environment variables. This project is capable to load these variables from local .env file too.
 ```bash
 $ touch .env
 ```
@@ -42,7 +44,7 @@ DB_USER=root
 DB_PASSWORD=ROOT
 ```
 
-Supported dialect are: `mysql`, `sqlite`, `postgres`, `mssql`.
+Supported DB dialect are: `mysql`, `sqlite`, `postgres`, `mssql`.
 
 ## DB Schema
 
