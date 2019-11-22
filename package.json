@@ -31,7 +31,7 @@
     "dotenv": "^8.2.0",
     "express-rate-limit": "^5.0.0",
     "httpie": "^1.1.2",
-    "indicative": "^7.2.1",
+    "indicative": "^7.2.3",
     "jsonwebtoken": "^8.5.1",
     "kleur": "^3.0.3",
     "make-promises-safe": "^5.0.0",
