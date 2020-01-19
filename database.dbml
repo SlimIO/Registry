@@ -1,0 +1,49 @@
+Table addons {
+  id integer [pk, increment]
+  authorId integer [ref: - users.id]
+  organisationId integer [ref: - organisations.id]
+  name varchar(35) [not null]
+  description varchar(120) [not null]
+  latest varchar(20)
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table versions {
+  id integer [pk, increment]
+  addonId integer [ref: > addons.id]
+  version varchar(20)
+  git varchar(120)
+  createdAt datetime
+}
+
+Table users {
+  id integer [pk, increment]
+  username varchar(40) [not null]
+  active boolean [not null, default: false]
+  email varchar [not null, unique]
+  password varchar(240) [not null]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table organisations {
+  id integer [pk, increment]
+  name varchar(35) [not null]
+  description varchar(120)
+  ownerId integer [not null, ref: - users.id]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table orgausers {
+  organisationId integer [not null, ref: - organisations.id]
+  userId integer [not null, ref: - users.id]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table tokens {
+  token varchar(36) [not null]
+  userId integer [not null, ref: - users.id]
+}
