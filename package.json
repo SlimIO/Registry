@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "prepublishOnly": "pkg-ok",
+    "hydrate": "node scripts/hydrate.js",
     "test": "cross-env psp && node test/test.js",
     "doc": "jsdoc -c ./jsdoc.json -r -R ./README.md -P ./package.json --verbose",
     "coverage": "nyc npm test",

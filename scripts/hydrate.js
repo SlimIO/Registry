@@ -75,9 +75,12 @@ async function main() {
         await tables.Addons.create({
             name: cleanName,
             description,
-            version,
+            latest: version,
+            version: {
+                version,
+                git: `https://github.com/${fullName}.git`
+            },
             authorId: user.id,
-            git: `https://github.com/${fullName}.git`,
             organisationId: org.id
         });
     }
