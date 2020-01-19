@@ -70,7 +70,8 @@ function exportModels(database) {
         version: {
             type: Sequelize.STRING(20),
             allowNull: false
-        }
+        },
+        git: { type: Sequelize.STRING(120), allowNull: false }
     },
     { updatedAt: false });
 
@@ -80,8 +81,11 @@ function exportModels(database) {
             allowNull: false,
             validate: { len: [2, 35] }
         },
-        description: { type: Sequelize.STRING(120), allowNull: true },
-        git: { type: Sequelize.STRING(120), allowNull: false }
+        latest: {
+            type: Sequelize.STRING(20),
+            allowNull: false
+        },
+        description: { type: Sequelize.STRING(120), allowNull: true }
     });
     Users.hasMany(Addons, { foreignKey: "authorId" });
     Addons.belongsTo(Users, { as: "author", foreignKey: { allowNull: false }, onDelete: "CASCADE" });

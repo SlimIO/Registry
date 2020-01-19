@@ -14,7 +14,6 @@ const rules = require("../validationRules");
 // Create Router
 const server = polka();
 
-// Addons endpoint
 server.get("/", async(req, res) => {
     try {
         const addons = await req.Addons.findAll({ attributes: ["name"] });
@@ -84,8 +83,9 @@ server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), as
         });
 
         if (addonExist === null) {
+            const versions = [{ version, git }];
             const addon = await req.Addons.create({
-                name, description, authorId, versions: [{ version }], git, organisationId
+                name, description, authorId, latest: version, versions, organisationId
             }, { include: [req.Version] });
 
             return send(res, 201, { addonId: addon.id });
@@ -102,7 +102,8 @@ server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), as
         if (!is.nullOrUndefined(greatestVersion) && semver.gt(version, greatestVersion) === false) {
             return send(res, 500, `Addon version must be greater than '${greatestVersion}'`);
         }
-        await addonExist.addVersion(await req.Version.create({ version }));
+        await addonExist.addVersion(await req.Version.create({ version, git }));
+        await addonExist.update({ latest: version });
 
         return send(res, 200, { addonId: addonExist.id });
     }

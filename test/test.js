@@ -61,17 +61,23 @@ japa.group("Endpoints tests", (group) => {
         await tables.Addons.create({
             name: "cpu",
             description: "CPU Addon",
-            version: "1.2.0",
+            latest: "1.2.0",
+            version: {
+                version: "1.2.0",
+                git: "https://github.com/SlimIO/cpu-addon"
+            },
             authorId: user.id,
-            git: "https://github.com/SlimIO/cpu-addon"
         });
 
         await tables.Addons.create({
             name: "memory",
             description: "Memory Addon",
-            version: "1.0.0",
+            latest: "1.0.0",
+            version: {
+                version: "1.0.0",
+                git: "http://github.com/"
+            },
             authorId: user.id,
-            git: "http://github.com/",
             organisationId: org.id
         });
 
@@ -236,11 +242,10 @@ japa.group("Endpoints tests", (group) => {
         assert.equal(statusCode, 200, "POST Request must return code 200");
         assert.equal(is.plainObject(data), true, "Returned data must be a plain Object");
 
-        assert.deepEqual(Object.keys(data), [
-            "name", "description", "git", "createdAt", "updatedAt", "author", "versions", "organisation"
-        ]);
+        assert.deepEqual(Object.keys(data).sort(), [
+            "name", "description", "latest", "createdAt", "updatedAt", "author", "versions", "organisation"
+        ].sort());
         assert.equal(data.name, "cpu");
-        assert.equal(data.git, "https://github.com/SlimIO/cpu-addon");
         assert.equal(data.author.username, "admin");
     });
 
