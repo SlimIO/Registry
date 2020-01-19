@@ -3,6 +3,7 @@
 // Require Third-party Dependencies
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
+const { validate } = require("indicative/validator");
 
 // CONSTANTS
 const SECRET_KEY = process.env.SECRET_KEY || "default_secret";
@@ -25,4 +26,27 @@ function isAuthenticated(req, res, next) {
     });
 }
 
-module.exports = { isAuthenticated, SECRET_KEY };
+/**
+ * @function validationMiddleware
+ * @param {any} schema
+ * @param {object} options
+ * @returns {any}
+ */
+function validationMiddleware(schema = {}, options = {}) {
+    const { params = false } = options;
+
+    return async(req, res, next) => {
+        try {
+            await validate(params ? req.params : (req.body || {}), schema);
+
+            return next();
+        }
+        catch (error) {
+            const message = Array.isArray(error) ? error[0].message : toString(error);
+
+            return send(res, 400, message);
+        }
+    };
+}
+
+module.exports = { isAuthenticated, validationMiddleware, SECRET_KEY };

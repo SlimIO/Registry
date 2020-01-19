@@ -5,15 +5,15 @@ const polka = require("polka");
 const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
-const { validate } = require("indicative/validator");
 const sequelize = require("sequelize");
 const uuid = require("uuid/v4");
 const nodemailer = require("nodemailer");
 
 // Require Internal Dependencies
+const { validationMiddleware } = require("../utils");
 const rules = require("../validationRules");
 
-// Globals
+// VARS
 const Op = sequelize.Op;
 
 // Create router
@@ -38,41 +38,39 @@ async function createTransporter() {
     });
 }
 
-// create user endpoint
-server.post("/", async(req, res) => {
+server.post("/", validationMiddleware(rules.userRegistration), async(req, res) => {
     try {
-        await validate(req.body, rules.userRegistration);
+        const { username, password, email } = req.body;
+
+        const exist = await req.Users.findOne({ where: {
+            [Op.or]: [{ username }, { email }]
+        } });
+        if (!is.nullOrUndefined(exist)) {
+            return send(res, 500, "Sorry! Seem you have already registered an account with this email/username.");
+        }
+
+        const token = uuid();
+        const transporter = await createTransporter();
+        const info = await transporter.sendMail({
+            from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
+            to: email,
+            subject: "SlimIO Registry Account Registration",
+            text: `Register your account with the following token: ${token}`
+        });
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+
+        const user = await req.Users.create({
+            username, email, password: await argon2.hash(password)
+        });
+
+        const userId = user.id;
+        await req.Tokens.create({ token, userId });
+
+        return send(res, 201, {});
     }
     catch (err) {
         return send(res, 500, err.message);
     }
-    const { username, password, email } = req.body;
-
-    const exist = await req.Users.findOne({ where: {
-        [Op.or]: [{ username }, { email }]
-    } });
-    if (!is.nullOrUndefined(exist)) {
-        return send(res, 500, "Sorry! Seem you have already registered an account with this email/username.");
-    }
-
-    const token = uuid();
-    const transporter = await createTransporter();
-    const info = await transporter.sendMail({
-        from: "\"SlimIO Team\" <gentilhommme.thomas@gmail.com>",
-        to: email,
-        subject: "SlimIO Registry Account Registration",
-        text: `Register your account with the following token: ${token}`
-    });
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-
-    const user = await req.Users.create({
-        username, email, password: await argon2.hash(password)
-    });
-
-    const userId = user.id;
-    await req.Tokens.create({ token, userId });
-
-    return send(res, 201, {});
 });
 
 server.post("/activeAccount", async(req, res) => {

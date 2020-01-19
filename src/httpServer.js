@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const send = require("@polka/send-type");
 const argon2 = require("argon2");
-const { validate } = require("indicative/validator");
 
 // Require Internal Dependencies
 const { user, addon, organisation } = require("./routes");
@@ -24,13 +23,7 @@ server.use("/organisation", organisation);
 server.get("/", (req, res) => send(res, 200, { uptime: process.uptime() }));
 
 // Login endpoint
-server.post("/login", async(req, res) => {
-    try {
-        await validate(req.body, rules.user);
-    }
-    catch (err) {
-        return send(res, 500, err.message);
-    }
+server.post("/login", utils.validationMiddleware(rules.user), async(req, res) => {
     const { username, password } = req.body;
 
     const user = await req.Users.findOne({

@@ -10,7 +10,6 @@ const { isAuthenticated } = require("../utils.js");
 // Create Router
 const server = polka();
 
-// all organisations endpoint
 server.get("/", async(req, res) => {
     try {
         const organisations = await req.Organisation.findAll({
@@ -52,11 +51,9 @@ server.get("/", async(req, res) => {
     }
 });
 
-// get organisation by name endpoint
 server.get("/:name", async(req, res) => {
-    const name = req.params.name;
-
     try {
+        const name = req.params.name;
         const organisations = await req.Organisation.findAll({
             attributes: { exclude: ["id", "ownerId"] },
             where: { name },
@@ -78,11 +75,9 @@ server.get("/:name", async(req, res) => {
             ]
         });
 
-        if (organisations.length === 0) {
-            return send(res, 500, `Organisation '${name}' Not Found`);
-        }
-
-        return send(res, 200, organisations[0]);
+        return organisations.length === 0 ?
+            send(res, 500, `Organisation '${name}' Not Found`) :
+            send(res, 200, organisations[0]);
     }
     catch (error) {
         /* istanbul ignore next */
@@ -90,12 +85,11 @@ server.get("/:name", async(req, res) => {
     }
 });
 
-// add user to an organisation
 server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
-    const { orgaName, userName } = req.params;
-
     try {
+        const { orgaName, userName } = req.params;
         const organisation = await req.Organisation.findOne({ where: { name: orgaName } });
+
         if (organisation === null) {
             return send(res, 500, `Organisation '${orgaName}' not found`);
         }

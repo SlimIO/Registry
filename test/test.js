@@ -105,7 +105,7 @@ japa.group("Endpoints tests", (group) => {
             await post(new URL("/users", HTTP_URL));
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
             assert.equal(is.string(err.data), true, "Returned data must be an string");
         }
     });
@@ -155,7 +155,7 @@ japa.group("Endpoints tests", (group) => {
             await post(new URL("/login", HTTP_URL));
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
             assert.equal(is.string(err.data), true, "Returned data must be a string");
         }
     });
@@ -214,7 +214,7 @@ japa.group("Endpoints tests", (group) => {
             await get(new URL("/addon/s", HTTP_URL));
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
             assert.equal(is.string(err.data), true, "Returned data must be a string");
         }
     });
@@ -311,7 +311,7 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
             assert.equal(is.string(err.data), true, "Returned data must be a string");
         }
     });
@@ -333,9 +333,9 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
             assert.equal(is.string(err.data), true, "Returned data must be a string");
-            assert.equal(err.data, "Internal Server Error");
+            assert.equal(err.data, "semver validation failed on version");
         }
     });
 

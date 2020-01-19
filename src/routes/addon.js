@@ -6,10 +6,9 @@ const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const semver = require("semver");
 const semverSort = require("semver-sort");
-const { validate } = require("indicative/validator");
 
 // Require Internal Dependencies
-const { isAuthenticated } = require("../utils.js");
+const { isAuthenticated, validationMiddleware } = require("../utils.js");
 const rules = require("../validationRules");
 
 // Create Router
@@ -28,17 +27,9 @@ server.get("/", async(req, res) => {
     }
 });
 
-// Addon Name endpoint
-server.get("/:addonName", async(req, res) => {
+server.get("/:addonName", validationMiddleware(rules.addon, { params: true }), async(req, res) => {
     try {
-        await validate(req.params, rules.addon);
-    }
-    catch (err) {
-        return send(res, 500, err.message);
-    }
-    const addonName = req.params.addonName;
-
-    try {
+        const addonName = req.params.addonName;
         const addons = await req.Addons.findAll({
             where: { name: addonName },
             attributes: { exclude: ["id", "authorId", "organisationId"] },
@@ -57,11 +48,9 @@ server.get("/:addonName", async(req, res) => {
             }]
         });
 
-        if (addons.length === 0) {
-            return send(res, 500, `Unable to found Addon '${addonName}'`);
-        }
-
-        return send(res, 200, addons[0]);
+        return addons.length === 0 ?
+            send(res, 500, `Unable to found Addon '${addonName}'`) :
+            send(res, 200, addons[0]);
     }
     catch (error) {
         /* istanbul ignore next */
@@ -69,15 +58,7 @@ server.get("/:addonName", async(req, res) => {
     }
 });
 
-
-// publish addon endpoint
-server.post("/publish", isAuthenticated, async(req, res) => {
-    try {
-        await validate(req.body, rules.publish);
-    }
-    catch (err) {
-        return send(res, 500, err.message);
-    }
+server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), async(req, res) => {
     const { name, description, version, git, organisation } = req.body;
     const authorId = req.user.id;
 
