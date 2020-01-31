@@ -8,7 +8,7 @@ const semver = require("semver");
 const semverSort = require("semver-sort");
 
 // Require Internal Dependencies
-const { isAuthenticated, validationMiddleware } = require("../utils.js");
+const { isAuthenticated, validationMiddleware, INTERNAL_ERROR, CODES, createHTTPError } = require("../utils.js");
 const rules = require("../validationRules");
 
 // Create Router
@@ -22,7 +22,7 @@ server.get("/", async(req, res) => {
     }
     catch (error) {
         /* istanbul ignore next */
-        return send(res, 500, error);
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 
@@ -48,12 +48,12 @@ server.get("/:addonName", validationMiddleware(rules.addon, { params: true }), a
         });
 
         return addons.length === 0 ?
-            send(res, 500, `Unable to found Addon '${addonName}'`) :
+            send(res, 404, createHTTPError({ code: CODES.NOTFOUND, message: `Unable to found Addon '${addonName}'` })) :
             send(res, 200, addons[0]);
     }
     catch (error) {
         /* istanbul ignore next */
-        return send(res, 500, error);
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 
@@ -69,7 +69,9 @@ server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), as
             });
 
             if (is.nullOrUndefined(organisationExist)) {
-                return send(res, 500, `Organisation '${organisation}' not found`);
+                const error = createHTTPError({ code: CODES.NOTFOUND, message: `Organisation '${organisation}' not found` });
+
+                return send(res, 404, error);
             }
             organisationId = organisationExist.id;
         }
@@ -92,7 +94,7 @@ server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), as
         }
 
         if (authorId !== addonExist.authorId) {
-            return send(res, 500, `Addon '${name}' already in use`);
+            return send(res, 500, createHTTPError({ code: CODES.EEXIST, message: `Addon '${name}' already in use` }));
         }
 
         const versions = addonExist.versions.map((obj) => obj.version);
@@ -100,7 +102,7 @@ server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), as
         const greatestVersion = versions.shift();
 
         if (!is.nullOrUndefined(greatestVersion) && semver.gt(version, greatestVersion) === false) {
-            return send(res, 500, `Addon version must be greater than '${greatestVersion}'`);
+            return send(res, 500, createHTTPError(`Addon version must be greater than '${greatestVersion}'`));
         }
         await addonExist.addVersion(await req.Version.create({ version, git }));
         await addonExist.update({ latest: version });
@@ -109,7 +111,7 @@ server.post("/publish", isAuthenticated, validationMiddleware(rules.publish), as
     }
     catch (error) {
         /* istanbul ignore next */
-        return send(res, 500, { error });
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 

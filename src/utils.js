@@ -7,6 +7,12 @@ const { validate } = require("indicative/validator");
 
 // CONSTANTS
 const SECRET_KEY = process.env.SECRET_KEY || "default_secret";
+const CODES = Object.freeze({
+    UNAUTHORIZED: "ERR_UNAUTHORIZED",
+    NOTFOUND: "ERR_NOTFOUND",
+    EEXIST: "ERR_EEXIST"
+});
+const INTERNAL_ERROR = createHTTPError("Internal Server Error!");
 
 /**
  * @function isAuthenticated
@@ -49,4 +55,25 @@ function validationMiddleware(schema = {}, options = {}) {
     };
 }
 
-module.exports = { isAuthenticated, validationMiddleware, SECRET_KEY };
+/**
+ * @function createHTTPError
+ * @param {string[]} messages
+ * @returns {object}
+ */
+function createHTTPError(...messages) {
+    // eslint-disable-next-line arrow-body-style
+    const errors = messages.map((message) => {
+        return typeof message === "string" ? { code: null, message } : message;
+    });
+
+    return { errors };
+}
+
+module.exports = {
+    isAuthenticated,
+    validationMiddleware,
+    createHTTPError,
+    CODES,
+    INTERNAL_ERROR,
+    SECRET_KEY
+};

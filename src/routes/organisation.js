@@ -5,7 +5,7 @@ const polka = require("polka");
 const send = require("@polka/send-type");
 
 // Require Internal Dependencies
-const { isAuthenticated } = require("../utils.js");
+const { isAuthenticated, INTERNAL_ERROR, CODES, createHTTPError } = require("../utils.js");
 
 // Create Router
 const server = polka();
@@ -47,7 +47,7 @@ server.get("/", async(req, res) => {
     }
     catch (error) {
         /* istanbul ignore next */
-        return send(res, 500, error);
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 
@@ -76,12 +76,12 @@ server.get("/:name", async(req, res) => {
         });
 
         return organisations.length === 0 ?
-            send(res, 500, `Organisation '${name}' Not Found`) :
+            send(res, 404, createHTTPError({ code: CODES.NOTFOUND, message: `Organisation '${name}' Not Found` })) :
             send(res, 200, organisations[0]);
     }
     catch (error) {
         /* istanbul ignore next */
-        return send(res, 500, error);
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 
@@ -91,19 +91,27 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
         const organisation = await req.Organisation.findOne({ where: { name: orgaName } });
 
         if (organisation === null) {
-            return send(res, 500, `Organisation '${orgaName}' not found`);
+            return send(res, 404, createHTTPError({ code: CODES.NOTFOUND, message: `Organisation '${orgaName}' not found` }));
         }
         if (organisation.ownerId !== req.user.id) {
-            return send(res, 401, `You have no right on '${orgaName}' organisation`);
+            const error = createHTTPError({
+                code: CODES.UNAUTHORIZED, message: `You have no right on '${orgaName}' organisation`
+            });
+
+            return send(res, 401, error);
         }
 
         const user = await req.Users.findOne({ where: { username: userName } });
         if (user === null) {
-            return send(res, 500, `User '${userName}' not found`);
+            return send(res, 404, createHTTPError({ code: CODES.NOTFOUND, message: `User '${userName}' not found` }));
         }
 
         if (await organisation.hasUsers(user)) {
-            return send(res, 500, `User '${userName}' already in the '${orgaName}' Organisation`);
+            const error = createHTTPError({
+                code: CODES.EEXIST, message: `User '${userName}' already in the '${orgaName}' Organisation`
+            });
+
+            return send(res, 500, error);
         }
         const result = await organisation.addUsers(user);
 
@@ -111,7 +119,7 @@ server.post("/:orgaName/:userName", isAuthenticated, async(req, res) => {
     }
     catch (error) {
         /* istanbul ignore next */
-        return send(res, 500, { error });
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 

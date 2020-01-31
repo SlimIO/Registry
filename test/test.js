@@ -126,7 +126,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Sorry! Seem you have already registered an account with this email/username.");
+            assert.equal(err.data.errors[0].message, "An account is already registered with this given email or username.");
         }
     });
 
@@ -175,8 +175,8 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "User not found or not active");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
+            assert.equal(err.data.errors[0].message, "Unable to authenticate the given user");
         }
     });
 
@@ -189,8 +189,8 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 401, "POST Request must return code 401");
-            assert.equal(err.data, "Invalid User Password");
+            assert.equal(err.statusCode, 400, "POST Request must return code 400");
+            assert.equal(err.data.errors[0].message, "Unable to authenticate the given user");
         }
     });
 
@@ -232,8 +232,8 @@ japa.group("Endpoints tests", (group) => {
             await get(new URL("/addon/myAddon", HTTP_URL));
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Unable to found Addon 'myAddon'");
+            assert.equal(err.statusCode, 404, "POST Request must return code 404");
+            assert.equal(err.data.errors[0].message, "Unable to found Addon 'myAddon'");
         }
     });
 
@@ -272,8 +272,8 @@ japa.group("Endpoints tests", (group) => {
             await get(new URL("/organisation/unknown", HTTP_URL));
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Organisation 'unknown' Not Found");
+            assert.equal(err.statusCode, 404, "POST Request must return code 404");
+            assert.equal(err.data.errors[0].message, "Organisation 'unknown' Not Found");
         }
     });
 
@@ -396,7 +396,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Addon 'network' already in use");
+            assert.equal(err.data.errors[0].message, "Addon 'network' already in use");
         }
     });
 
@@ -416,7 +416,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Addon version must be greater than '0.1.0'");
+            assert.equal(err.data.errors[0].message, "Addon version must be greater than '0.1.0'");
         }
     });
 
@@ -520,8 +520,8 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Organisation 'unknown' not found");
+            assert.equal(err.statusCode, 404, "POST Request must return code 404");
+            assert.equal(err.data.errors[0].message, "Organisation 'unknown' not found");
         }
     });
 
@@ -536,8 +536,8 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "Organisation 'unknown' not found");
+            assert.equal(err.statusCode, 404, "POST Request must return code 404");
+            assert.equal(err.data.errors[0].message, "Organisation 'unknown' not found");
         }
     });
 
@@ -553,7 +553,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 401, "POST Request must return code 401");
-            assert.equal(err.data, "You have no right on 'SlimIO' organisation");
+            assert.equal(err.data.errors[0].message, "You have no right on 'SlimIO' organisation");
         }
     });
 
@@ -568,8 +568,8 @@ japa.group("Endpoints tests", (group) => {
             });
         }
         catch (err) {
-            assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "User 'boubou' not found");
+            assert.equal(err.statusCode, 404, "POST Request must return code 404");
+            assert.equal(err.data.errors[0].message, "User 'boubou' not found");
         }
     });
 
@@ -585,7 +585,7 @@ japa.group("Endpoints tests", (group) => {
         }
         catch (err) {
             assert.equal(err.statusCode, 500, "POST Request must return code 500");
-            assert.equal(err.data, "User 'fraxken' already in the 'SlimIO' Organisation");
+            assert.equal(err.data.errors[0].message, "User 'fraxken' already in the 'SlimIO' Organisation");
         }
     });
 

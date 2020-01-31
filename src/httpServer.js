@@ -12,6 +12,12 @@ const { user, addon, organisation } = require("./routes");
 const rules = require("./validationRules");
 const utils = require("./utils");
 
+// CONSTANTS
+const kUnableToAuthenticate = utils.createHTTPError({
+    code: "AUTH_FAILED",
+    message: "Unable to authenticate the given user"
+});
+
 // Create POLKA Server
 const server = polka();
 server.use(bodyParser.json());
@@ -30,14 +36,8 @@ server.post("/login", utils.validationMiddleware(rules.user), async(req, res) =>
         attributes: ["username", "password", "id"],
         where: { username, active: true }
     });
-    if (user === null) {
-        return send(res, 500, "User not found or not active");
-    }
-
-    // Verifying password
-    const isMatching = await argon2.verify(user.password, password);
-    if (!isMatching) {
-        return send(res, 401, "Invalid User Password");
+    if (user === null || !(await argon2.verify(user.password, password))) {
+        return send(res, 400, kUnableToAuthenticate);
     }
 
     // eslint-disable-next-line

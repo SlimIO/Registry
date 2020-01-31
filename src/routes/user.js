@@ -10,7 +10,7 @@ const uuid = require("uuid/v4");
 const nodemailer = require("nodemailer");
 
 // Require Internal Dependencies
-const { validationMiddleware } = require("../utils");
+const { validationMiddleware, INTERNAL_ERROR, createHTTPError, CODES } = require("../utils");
 const rules = require("../validationRules");
 
 // VARS
@@ -46,7 +46,9 @@ server.post("/", validationMiddleware(rules.userRegistration), async(req, res) =
             [Op.or]: [{ username }, { email }]
         } });
         if (!is.nullOrUndefined(exist)) {
-            return send(res, 500, "Sorry! Seem you have already registered an account with this email/username.");
+            return send(res, 500, createHTTPError({
+                code: CODES.EEXIST, message: "An account is already registered with this given email or username."
+            }));
         }
 
         const token = uuid();
@@ -69,25 +71,25 @@ server.post("/", validationMiddleware(rules.userRegistration), async(req, res) =
         return send(res, 201, {});
     }
     catch (err) {
-        return send(res, 500, err.message);
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 
 server.post("/activeAccount", async(req, res) => {
     const { token } = req.body;
     if (typeof token !== "string") {
-        return send(res, 500, "body.token must be a string");
+        return send(res, 400, createHTTPError("token must be a string"));
     }
 
     try {
         const row = await req.Tokens.findOne({ where: { token } });
         if (row === null) {
-            return send(res, 500, "unable to activate account");
+            return send(res, 500, createHTTPError("unable to activate account"));
         }
 
         const [count] = await req.Users.update({ active: true }, { where: { id: row.userId } });
         if (count !== 1) {
-            return send(res, 500, "unable to activate account");
+            return send(res, 500, createHTTPError("unable to activate account"));
         }
 
         await req.Tokens.destroy({ where: { id: row.id } });
@@ -95,7 +97,7 @@ server.post("/activeAccount", async(req, res) => {
         return send(res, 200, {});
     }
     catch (err) {
-        return send(res, 500, err.message);
+        return send(res, 500, INTERNAL_ERROR);
     }
 });
 
