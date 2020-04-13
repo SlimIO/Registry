@@ -38,7 +38,7 @@
     "make-promises-safe": "^5.1.0",
     "nodemailer": "^6.4.2",
     "polka": "^0.5.2",
-    "semver": "^7.1.1",
+    "semver": "^7.2.2",
     "semver-sort": "0.0.4",
     "sequelize": "^5.21.3",
     "sqlite3": "^4.1.1",
