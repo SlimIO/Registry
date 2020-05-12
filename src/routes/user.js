@@ -6,7 +6,7 @@ const send = require("@polka/send-type");
 const is = require("@slimio/is");
 const argon2 = require("argon2");
 const sequelize = require("sequelize");
-const uuid = require("uuid/v4");
+const uuid = require("@lukeed/uuid");
 const nodemailer = require("nodemailer");
 
 // Require Internal Dependencies

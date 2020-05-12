@@ -25,6 +25,7 @@
   "author": "SlimIO",
   "license": "MIT",
   "dependencies": {
+    "@lukeed/uuid": "^1.0.1",
     "@polka/send-type": "^0.5.2",
     "@slimio/is": "^1.5.1",
     "argon2": "^0.26.2",
@@ -41,8 +42,7 @@
     "semver": "^7.3.2",
     "semver-sort": "0.0.4",
     "sequelize": "^5.21.8",
-    "sqlite3": "^4.2.0",
-    "uuid": "^8.0.0"
+    "sqlite3": "^4.2.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
