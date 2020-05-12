@@ -18,6 +18,7 @@ const models = require("./src/models");
 // CONSTANTS
 const PORT = process.env.PORT || 1338;
 const DB_OPTIONS = {
+    host: process.env.DB_HOST || "localhost",
     dialect: process.env.DB_DIALECT || "sqlite",
     database: process.env.DB_NAME || "registry",
     username: process.env.DB_USER || "root",
