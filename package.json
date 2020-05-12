@@ -10,7 +10,9 @@
     "test": "cross-env psp && node test/test.js",
     "doc": "jsdoc -c ./jsdoc.json -r -R ./README.md -P ./package.json --verbose",
     "coverage": "nyc npm test",
-    "report": "nyc report --reporter=html"
+    "report": "nyc report --reporter=html",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [
     "SlimIO",
@@ -42,7 +44,8 @@
     "semver": "^7.3.2",
     "semver-sort": "0.0.4",
     "sequelize": "^5.21.8",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "snyk": "^1.320.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
