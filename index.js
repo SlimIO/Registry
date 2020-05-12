@@ -38,7 +38,9 @@ if (process.env.DB_DIALECT === "sqlite") {
  */
 async function main() {
     console.log(white().bold(` > init SQLite database: ${yellow().bold(join(__dirname, "database.sqlite"))}`));
-    const sequelize = new Sequelize(DB_OPTIONS);
+    const sequelizeOptions = typeof process.env.DATABASE_URL === "string" ? process.env.DATABASE_URL : DB_OPTIONS;
+    console.log(sequelizeOptions);
+    const sequelize = new Sequelize(sequelizeOptions);
     const tables = models(sequelize);
     let isClosed = false;
 
