@@ -14,6 +14,10 @@ const rateLimiter = require("express-rate-limit");
 // Require Internal Dependencies
 const server = require("./src/httpServer");
 const models = require("./src/models");
+const initDefaultData = require("./src/initDefaultData");
+
+// ARGV
+const [initData = null] = process.argv.slice(2);
 
 // CONSTANTS
 const PORT = process.env.PORT || 1338;
@@ -45,6 +49,9 @@ async function main() {
     let isClosed = false;
 
     await sequelize.sync();
+    if (initData !== null) {
+        await initDefaultData(tables);
+    }
 
     // Cleanup Interval
     setInterval(async() => {

@@ -4,7 +4,7 @@
   "description": "SlimIO Addons registry",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.js init",
     "prepublishOnly": "pkg-ok",
     "hydrate": "node scripts/hydrate.js",
     "test": "cross-env psp && node test/test.js",
