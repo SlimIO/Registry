@@ -12,6 +12,7 @@
             "./src/models.js",
             "./src/utils.js",
             "./src/validationRules.js",
+            "./src/initDefaultData.js",
             "./src/routes/addon.js",
             "./src/routes/index.js",
             "./src/routes/organisation.js",

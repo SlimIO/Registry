@@ -3,4 +3,4 @@ version = "1.1.0"
 type = "Service"
 
 [psp]
-disabled_dependency=["sqlite3", "indicative-utils"]
+disabled_dependency=["sqlite3", "indicative-utils", "pg"]
