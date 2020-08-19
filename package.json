@@ -38,7 +38,7 @@
     "kleur": "^3.0.3",
     "make-promises-safe": "^5.1.0",
     "nodemailer": "^6.4.6",
-    "pg": "^8.2.1",
+    "pg": "^8.3.2",
     "polka": "^0.5.2",
     "semver": "^7.3.2",
     "semver-sort": "0.0.4",
