@@ -28,7 +28,7 @@
     "@lukeed/uuid": "^1.0.1",
     "@polka/send-type": "^0.5.2",
     "@slimio/is": "^1.5.1",
-    "argon2": "^0.26.2",
+    "argon2": "^0.27.2",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express-rate-limit": "^5.1.3",
@@ -42,8 +42,8 @@
     "polka": "^0.5.2",
     "semver": "^7.3.2",
     "semver-sort": "0.0.4",
-    "sequelize": "^5.21.9",
-    "sqlite3": "^4.2.0"
+    "sequelize": "^6.1.0",
+    "sqlite3": "^5.0.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
